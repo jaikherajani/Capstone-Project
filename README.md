@@ -1,3 +1,3 @@
 # Capstone-Project
 Capstone-Project
-![Alt text](/relative/path/to/popmov.gif?raw=true "Capstone Project")
+![Alt text](/popmov.gif?raw=true "Capstone Project")
