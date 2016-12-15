@@ -1,0 +1,19 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.jaikh.movies.MainActivity">
+
+    <item
+        android:id="@+id/action_popular"
+        android:title="@string/action_popular"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_most_rated"
+        android:title="@string/action_most_rated"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_favorite"
+        android:title="@string/action_favorite"
+        app:showAsAction="never" />
+
+</menu>
