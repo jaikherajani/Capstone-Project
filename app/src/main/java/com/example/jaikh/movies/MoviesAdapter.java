@@ -23,6 +23,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
     //private int rowLayout;
     private Context context;
     private Movie movie;
+    long movie_id;
     //static OnItemClickListener mItemClickListener;
 
 
@@ -87,7 +88,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                long movie_id = movies.get(position).getId();
+                movie_id = movies.get(position).getId();
                 System.out.println("movie "+movie_id);
                 Context context = view.getContext();
                 Intent intent = new Intent(context, MovieDetail.class);

@@ -6,7 +6,9 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -42,6 +44,7 @@ public class MovieDetailFragment extends Fragment {
     public static String key;
     FloatingActionButton viewtrailer;
     public long movie_id;
+    private DBHelper databaseHelper;
 
     @Nullable
     @Override
@@ -49,6 +52,7 @@ public class MovieDetailFragment extends Fragment {
         View rootView;
         rootView = inflater.inflate(R.layout.movie_detail, container, false);
         Title = (TextView) rootView.findViewById(R.id.name);
+        databaseHelper = new DBHelper(getContext());
         plotView = (TextView) rootView.findViewById(R.id.synopsis);
         voteAvg = (TextView) rootView.findViewById(R.id.vote_average);
         releaseDate = (TextView) rootView.findViewById(R.id.release_date);
@@ -72,6 +76,28 @@ public class MovieDetailFragment extends Fragment {
                 sendIntent.putExtra(Intent.EXTRA_TEXT, "Hey checkout this movie, its awesome. Here's the link - https://www.themoviedb.org/movie/" + movie_id);
                 sendIntent.setType("text/plain");
                 startActivity(Intent.createChooser(sendIntent, "Share Movie with..."));
+            }
+        });
+
+        final FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
+        /*if(fav.equals("YES"))
+            fab.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_favorite));
+        else
+            fab.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_favorite_border));*/
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                boolean result = databaseHelper.insertData(movie_id);
+                if(result) {
+                    Snackbar.make(view, "Saved as Favorite", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+                    fab.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_favorite));
+                }
+                else
+                {
+                    Snackbar.make(view, "Something happended ! This movie might already be saved as favorite !", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+                }
             }
         });
 

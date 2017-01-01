@@ -21,4 +21,6 @@ public interface ApiInterface {
     @GET("movie/{id}")
     Call<SingleMovie> getMovieDetails(@Path("id") Long id, @Query("api_key") String apiKey,@Query("append_to_response") String params);
 
+    @GET("movie/{id}")
+    Call<Movie> getMovieDetails(@Path("id") Long id, @Query("api_key") String apiKey);
 }
