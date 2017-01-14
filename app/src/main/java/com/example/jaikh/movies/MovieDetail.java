@@ -13,7 +13,6 @@ import android.widget.TextView;
  */
 
 public class MovieDetail extends AppCompatActivity {
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -21,12 +20,12 @@ public class MovieDetail extends AppCompatActivity {
         Intent intent = getIntent();
 
         long movie_id = intent.getLongExtra("MOVIE_ID",0);
-        //Movie movie = (Movie)intent.getSerializableExtra("DATA_MOVIE");
+        Movie movie = (Movie)intent.getSerializableExtra("DATA_MOVIE");
         System.out.println("Received "+movie_id);
 
         Bundle mBundle = new Bundle();
         mBundle.putLong("MOVIE_ID",movie_id);
-
+        mBundle.putSerializable("MOVIE",movie);
         MovieDetailFragment detailFragment = new MovieDetailFragment();
         detailFragment.setArguments(mBundle);
         setContentView(R.layout.activity_movie_detail);

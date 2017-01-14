@@ -1,9 +1,15 @@
 package com.example.jaikh.movies;
 
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.os.PersistableBundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -27,18 +33,19 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private final static String API_KEY = "9f51fc0657294458eba8b6a2080ac00f";
     private List<Movie> movies = new ArrayList<>();
-    private List<Movie> favMovies = new ArrayList<>();
-    private MoviesAdapter moviesAdapter;
     private RecyclerView recyclerView;
-    private ImageView poster;
     private DBHelper databaseHelper;
+    private String status = "popular";
     private Movie fMovie;
+    private Snackbar snackbar;
     public Long[] b = new Long[20];
+    public String[] url = new String[20];
     public int a;
+    public Cursor favCursor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,16 +56,12 @@ public class MainActivity extends AppCompatActivity {
 
         databaseHelper = new DBHelper(this);
 
-        //TmdbMovies movies = new TmdbApi("9f51fc0657294458eba8b6a2080ac00f").getMovies();
-        //moviesAdapter = new MoviesAdapter(movies);
+        getSupportLoaderManager().initLoader(0,null,this);
+
+        //"9f51fc0657294458eba8b6a2080ac00f"
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new GridLayoutManager(this,2));
         recyclerView.hasFixedSize();
-        //moviesAdapter = new MoviesAdapter(getApplicationContext());
-        //recyclerView.setAdapter(moviesAdapter);
-        //moviesAdapter.displayPopular();
-        //recyclerView.isClickable();
-        //recyclerView.setAdapter(moviesAdapter);
         displayPopular();
     }
 
@@ -79,6 +82,13 @@ public class MainActivity extends AppCompatActivity {
                 Log.e("error : ", t.toString());
             }
         });
+        snackbar = Snackbar.make(findViewById(R.id.fragment), "Showing Popular", Snackbar.LENGTH_LONG);
+        snackbar.setAction("dismiss", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                snackbar.dismiss();
+            }
+        }).show();
     }
 
     private void displayRated() {
@@ -98,44 +108,44 @@ public class MainActivity extends AppCompatActivity {
                 Log.e("error : ", t.toString());
             }
         });
+        snackbar = Snackbar.make(findViewById(R.id.fragment), "Showing Most Rated", Snackbar.LENGTH_LONG);
+        snackbar.setAction("dismiss", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                snackbar.dismiss();
+            }
+        }).show();
     }
 
     private void displayFavorites() {
-        Cursor cursor = databaseHelper.getData();
+        movies.clear();
         a=0;
-        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
-        if (cursor.moveToFirst()) {
+        if (favCursor.moveToFirst()) {
             do {
-                b[a] = cursor.getLong(0);
-                Call<Movie> call = apiService.getMovieDetails(b[a], API_KEY);
-                System.out.println("Fav MovieId : "+b[a]);
-                System.out.println("count1 "+a);
-                call.enqueue(new Callback<Movie>() {
-                    @Override
-                    public void onResponse(Call<Movie> call, Response<Movie> response) {
-                        int statusCode = response.code();
-                        //movie1 = response.body().getResult();
-                        fMovie = response.body();
-                        System.out.println("count2 "+a);
-                        favMovies.add(a,fMovie);
-                        System.out.println("fMovie : "+ fMovie.getTitle());
-                        System.out.println("favorite movie " + call.request().url());
-                        recyclerView.setAdapter(new MoviesAdapter(getApplicationContext(),favMovies));
-                    }
-
-                    @Override
-                    public void onFailure(Call<Movie> call, Throwable t) {
-                        // Log error here since request failed
-                        //Log.e("error : ", t.toString());
-                        Log.e("error : ", t.getMessage());
-                    }
-                });
-                System.out.println("count3 "+a);
-                a++;
-            } while (cursor.moveToNext());
+                url[a] = favCursor.getString(1);
+                b[a] = favCursor.getLong(0);
+                fMovie = new Movie(url[a],b[a]);
+                movies.add(a,fMovie);
+                recyclerView.setAdapter(new MoviesAdapter(getApplicationContext(),movies));
+            } while (favCursor.moveToNext());
+            snackbar = Snackbar.make(findViewById(R.id.fragment), "Showing Favorites", Snackbar.LENGTH_LONG);
+            snackbar.setAction("dismiss", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    snackbar.dismiss();
+                }
+            }).show();
         }
-        Snackbar.make(findViewById(R.id.fragment), "Showing Favorites", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show();
+        else
+        {
+            snackbar = Snackbar.make(findViewById(R.id.fragment), "Oh No, Seems like you haven't marked any movie as your favorite!", Snackbar.LENGTH_INDEFINITE);
+                    snackbar.setAction("Okay!", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            snackbar.dismiss();
+                        }
+                    }).show();
+        }
 
     }
 
@@ -152,20 +162,38 @@ public class MainActivity extends AppCompatActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
         switch (id)
         {
             case R.id.action_popular :
+                status = "popular";
                 displayPopular();
                 break;
             case R.id.action_most_rated :
+                status = "most_rated";
                 displayRated();
                 break;
             case R.id.action_favorite :
+                status = "favorites";
                 displayFavorites();
                 break;
         }
-
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        Uri contentUri = MovieProvider.CONTENT_URI;
+        return new CursorLoader(this,contentUri,null,null,null,null);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        //System.out.println("onLoadFinished : "+data.getString(1));
+        favCursor = data;
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
     }
 }

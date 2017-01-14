@@ -1,5 +1,6 @@
 package com.example.jaikh.movies;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -21,8 +22,13 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -34,17 +40,20 @@ import retrofit2.Response;
 
 public class MovieDetailFragment extends Fragment {
 
-    //private Movie movie;
+    private Movie movie;
     private SingleMovie sMovie;
     public TextView plotView, voteAvg, releaseDate, Title, reviews, voteCount,status;
     public ImageView imageView, imageView2, trailerview;
     public Toolbar myToolbar;
     public CollapsingToolbarLayout appbar;
     private final static String API_KEY = "9f51fc0657294458eba8b6a2080ac00f";
-    public static String key;
+    public String key;
     FloatingActionButton viewtrailer;
     public long movie_id;
     private DBHelper databaseHelper;
+    private String resultJSON = null;
+    public String[] review = new String[10];
+    public String[] author = new String[10];
 
     @Nullable
     @Override
@@ -65,6 +74,7 @@ public class MovieDetailFragment extends Fragment {
         voteCount = (TextView) rootView.findViewById(R.id.vote_count);
         viewtrailer = (FloatingActionButton) rootView.findViewById(R.id.trailer);
         if (getArguments() != null) {
+            movie = (Movie) getArguments().getSerializable("MOVIE");
             movie_id = getArguments().getLong("MOVIE_ID");
         }
         final FloatingActionButton share = (FloatingActionButton) rootView.findViewById(R.id.share);
@@ -87,17 +97,14 @@ public class MovieDetailFragment extends Fragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                boolean result = databaseHelper.insertData(movie_id);
-                if(result) {
+                ContentValues values = new ContentValues();
+                values.put("movie_id",movie_id);
+                values.put("poster_path",sMovie.getPosterPath());
+                getActivity().getContentResolver().insert(MovieProvider.CONTENT_URI, values);
                     Snackbar.make(view, "Saved as Favorite", Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
                     fab.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_favorite));
-                }
-                else
-                {
-                    Snackbar.make(view, "Something happended ! This movie might already be saved as favorite !", Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
-                }
+                new Intent(getContext(), AppWidgetService.class);
             }
         });
 
@@ -172,10 +179,34 @@ public class MovieDetailFragment extends Fragment {
      viewtrailer.setOnClickListener(new View.OnClickListener() {
          @Override
          public void onClick(View view) {
-             Intent intent1 = new Intent(Intent.ACTION_VIEW, Uri.parse("http://m.youtube.com/watch?v=" + MovieDetailFragment.key));
+             Intent intent1 = new Intent(Intent.ACTION_VIEW, Uri.parse("http://m.youtube.com/watch?v=" + key));
              startActivity(intent1);
          }
      });
-     //System.out.println("sMovie : "+sMovie.getReviews().getResults().get(0).getAuthor());
+
+     FetchReview task1 = new FetchReview();
+     reviews.setText("");
+     try {
+         resultJSON = task1.execute(movie_id).get();
+         if (resultJSON != null) {
+             JSONObject movie = new JSONObject(resultJSON);
+             JSONArray movieDetails = movie.getJSONArray("results");
+             for (int i = 0; i <=5; i++) {
+                 JSONObject mov_reviews = movieDetails.getJSONObject(i);
+                 author[i] = mov_reviews.getString("author");
+                 review[i] = mov_reviews.getString("content");
+                 reviews.append("\nReview By - "+author[i]+"\n"+review[i]+"\n");
+                 reviews.append("------------------------------------------------------------------------------------\n");
+             }
+         }
+     }
+     catch (InterruptedException e) {
+         e.printStackTrace();
+     } catch (ExecutionException e) {
+         e.printStackTrace();
+     } catch (JSONException e) {
+         e.printStackTrace();
+     }
+
  }
 }
