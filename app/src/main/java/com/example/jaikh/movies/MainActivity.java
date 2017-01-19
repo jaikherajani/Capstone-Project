@@ -1,11 +1,9 @@
 package com.example.jaikh.movies;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Parcelable;
-import android.os.PersistableBundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -18,16 +16,11 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ImageView;
-import android.widget.Toast;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -35,7 +28,7 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    private final static String API_KEY = "9f51fc0657294458eba8b6a2080ac00f";
+    private String API_KEY = "9f51fc0657294458eba8b6a2080ac00f";
     private List<Movie> movies = new ArrayList<>();
     private RecyclerView recyclerView;
     private DBHelper databaseHelper;
@@ -46,18 +39,20 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public String[] url = new String[20];
     public int a;
     public Cursor favCursor;
+    private FirebaseAnalytics mFirebaseAnalytics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Obtain the FirebaseAnalytics instance.
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         databaseHelper = new DBHelper(this);
-
         getSupportLoaderManager().initLoader(0,null,this);
-
         //"9f51fc0657294458eba8b6a2080ac00f"
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new GridLayoutManager(this,2));
@@ -82,7 +77,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 Log.e("error : ", t.toString());
             }
         });
-        snackbar = Snackbar.make(findViewById(R.id.fragment), "Showing Popular", Snackbar.LENGTH_LONG);
+        snackbar = Snackbar.make(findViewById(R.id.fragment), R.string.sb_now_showing_popular, Snackbar.LENGTH_LONG);
         snackbar.setAction("dismiss", new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -108,7 +103,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 Log.e("error : ", t.toString());
             }
         });
-        snackbar = Snackbar.make(findViewById(R.id.fragment), "Showing Most Rated", Snackbar.LENGTH_LONG);
+        snackbar = Snackbar.make(findViewById(R.id.fragment), R.string.sb_now_showing_rated, Snackbar.LENGTH_LONG);
         snackbar.setAction("dismiss", new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -128,7 +123,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 movies.add(a,fMovie);
                 recyclerView.setAdapter(new MoviesAdapter(getApplicationContext(),movies));
             } while (favCursor.moveToNext());
-            snackbar = Snackbar.make(findViewById(R.id.fragment), "Showing Favorites", Snackbar.LENGTH_LONG);
+            snackbar = Snackbar.make(findViewById(R.id.fragment), R.string.sb_now_showing_favorites, Snackbar.LENGTH_LONG);
             snackbar.setAction("dismiss", new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -138,7 +133,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         }
         else
         {
-            snackbar = Snackbar.make(findViewById(R.id.fragment), "Oh No, Seems like you haven't marked any movie as your favorite!", Snackbar.LENGTH_INDEFINITE);
+            snackbar = Snackbar.make(findViewById(R.id.fragment), R.string.sb_no_favorites, Snackbar.LENGTH_INDEFINITE);
                     snackbar.setAction("Okay!", new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -176,6 +171,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 status = "favorites";
                 displayFavorites();
                 break;
+            case R.id.action_feedback :
+                startActivity(new Intent(this,Feedback.class));
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -188,12 +186,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        //System.out.println("onLoadFinished : "+data.getString(1));
         favCursor = data;
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-
     }
 }

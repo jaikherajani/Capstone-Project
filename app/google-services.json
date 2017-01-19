@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "1055651208594",
+    "firebase_url": "https://movies-cbbca.firebaseio.com",
+    "project_id": "movies-cbbca",
+    "storage_bucket": "movies-cbbca.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1055651208594:android:19d3c9ce7de380ef",
+        "android_client_info": {
+          "package_name": "com.example.jaikh.movies"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1055651208594-8ab1icf1uqvc2lgha81e4uabtj9l52hs.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.jaikh.movies",
+            "certificate_hash": "44739590BEF4A1ED6386AAD630522AC8938060DE"
+          }
+        },
+        {
+          "client_id": "1055651208594-n0kehnbbn56j1ld5m57qebpfeahpp5jp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCY7J8OWCXLrgyHtjQ7mPrPhosYSOI8sDo"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1055651208594-n0kehnbbn56j1ld5m57qebpfeahpp5jp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

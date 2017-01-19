@@ -2,6 +2,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#09C"
+    android:id="@+id/widget"
+    android:clickable="true"
     android:padding="@dimen/widget_margin">
 
     <LinearLayout
@@ -31,5 +33,17 @@
         android:id="@+id/widget_gridView"
         android:layout_below="@+id/widget_toolbar">
     </GridView>
+
+    <TextView
+        android:id="@+id/duh_no"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:visibility="invisible"
+        android:layout_centerInParent="true"
+        android:text="@string/no_duh"
+        android:textColor="#ffffff"
+        android:textSize="48sp"
+        android:textStyle="bold|italic" />
 
 </RelativeLayout>

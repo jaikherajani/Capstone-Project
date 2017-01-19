@@ -1,5 +1,6 @@
 package com.example.jaikh.movies;
 
+import android.appwidget.AppWidgetManager;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.net.Uri;
@@ -21,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -54,11 +56,13 @@ public class MovieDetailFragment extends Fragment {
     private String resultJSON = null;
     public String[] review = new String[10];
     public String[] author = new String[10];
+    private FirebaseAnalytics mFirebaseAnalytics;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView;
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(getContext());
         rootView = inflater.inflate(R.layout.movie_detail, container, false);
         Title = (TextView) rootView.findViewById(R.id.name);
         databaseHelper = new DBHelper(getContext());
@@ -103,8 +107,14 @@ public class MovieDetailFragment extends Fragment {
                 getActivity().getContentResolver().insert(MovieProvider.CONTENT_URI, values);
                     Snackbar.make(view, "Saved as Favorite", Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
-                    fab.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_favorite));
-                new Intent(getContext(), AppWidgetService.class);
+                fab.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_favorite));
+                mFirebaseAnalytics.setUserProperty("FAV_MOVIE",sMovie.getTitle());
+                AppWidgetManager awm = AppWidgetManager.getInstance(getContext());
+                Intent intent = new Intent(getContext(), AppWidget.class);
+                intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+                /*int[] ids = {R.xml.app_widget_info};
+                intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS,ids);*/
+                getActivity().sendBroadcast(intent);
             }
         });
 
@@ -157,11 +167,11 @@ public class MovieDetailFragment extends Fragment {
      Toast.makeText(getActivity(), "Showing " + sMovie.getTitle(), Toast.LENGTH_SHORT).show();
      status.setText(sMovie.getStatus());
      Glide.with(getContext())
-             .load("http://image.tmdb.org/t/p/w780/" + sMovie.getBackdropPath())
+             .load("https://image.tmdb.org/t/p/w780/" + sMovie.getBackdropPath())
              .into(imageView);
      System.out.println("backdrop path : " + sMovie.getBackdropPath());
      Glide.with(getContext())
-             .load("http://image.tmdb.org/t/p/w185/" + sMovie.getPosterPath())
+             .load("https://image.tmdb.org/t/p/w185/" + sMovie.getPosterPath())
              .into(imageView2);
      System.out.println("poster path : " + sMovie.getPosterPath());
      Title.setText(sMovie.getTitle());
@@ -172,7 +182,7 @@ public class MovieDetailFragment extends Fragment {
      //reviews.setText(sMovie.getReviews().getResults().toString());
      key = sMovie.getVideos().getResults().get(0).getKey();
      Glide.with(getContext())
-             .load("http://img.youtube.com/vi/" + key + "/hqdefault.jpg")
+             .load("https://img.youtube.com/vi/" + key + "/hqdefault.jpg")
              .fitCenter()
              .into(trailerview);
      System.out.println("trailer : " + "http://img.youtube.com/vi/" + key + "/hqdefault.jpg");

@@ -8,9 +8,7 @@ import android.net.Uri;
 import android.os.Binder;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
-
 import com.bumptech.glide.Glide;
-
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -30,6 +28,7 @@ public class AppWidgetDataProvider implements RemoteViewsService.RemoteViewsFact
     }
 
     private void initCursor(){
+        System.out.println("initCursor() called");
         if (cursor != null) {
             cursor.close();
         }
@@ -43,6 +42,7 @@ public class AppWidgetDataProvider implements RemoteViewsService.RemoteViewsFact
 
     @Override
     public void onCreate() {
+        System.out.println("onCreate() called");
         initCursor();
         if (cursor != null) {
             cursor.moveToFirst();
@@ -52,6 +52,7 @@ public class AppWidgetDataProvider implements RemoteViewsService.RemoteViewsFact
     @Override
     public void onDataSetChanged() {
         /** Listen for data changes and initialize the cursor again **/
+        System.out.println("onDataSetChanged() called");
         initCursor();
     }
 
@@ -73,10 +74,10 @@ public class AppWidgetDataProvider implements RemoteViewsService.RemoteViewsFact
         try {
             Bitmap theBitmap = Glide.
                     with(context.getApplicationContext()).
-                    load("http://image.tmdb.org/t/p/w185/"+cursor.getString(1)).
-                    asBitmap().
-                    into(185,275). // Width and height
-                    get();
+                    load("http://image.tmdb.org/t/p/w185/"+cursor.getString(1))
+                    .asBitmap()
+                    .into(185,275) // Width and height
+                    .get();
 
             remoteViews.setImageViewBitmap(R.id.grid_image,theBitmap);
         } catch (InterruptedException e) {

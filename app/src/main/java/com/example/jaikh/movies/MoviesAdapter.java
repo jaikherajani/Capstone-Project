@@ -59,7 +59,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
         //holder.data.setText(movies.get(position).getReleaseDate());
         //holder.movieDescription.setText(movies.get(position).getOverview());
         //holder.rating.setText(movies.get(position).getVoteAverage().toString());
-        Glide.with(context).load("http://image.tmdb.org/t/p/w185/"+movies.get(position).getPosterPath()).into(holder.poster);
+        Glide.with(context).load("https://image.tmdb.org/t/p/w185/"+movies.get(position).getPosterPath()).into(holder.poster);
         //System.out.println(movies.get(position).getPosterPath());
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
