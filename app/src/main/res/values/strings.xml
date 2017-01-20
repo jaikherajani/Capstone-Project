@@ -30,4 +30,8 @@
     <string name="sb_saved_favorite">Saved as Favorite</string>
     <string name="sb_problem_saving_favorite">Something happened, please try again!</string>
     <string name="sb_removed_favorite">Removed from Favorites</string>
+    <string name="sb_no_internet">No Internet Connection Available !</string>
+
+    <!--intents-->
+    <string name="i_share">"Hey checkout this movie, its awesome. Here\'s the link - https://www.themoviedb.org/movie/"</string>
 </resources>

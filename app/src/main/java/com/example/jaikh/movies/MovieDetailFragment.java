@@ -5,6 +5,8 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -62,6 +64,7 @@ public class MovieDetailFragment extends Fragment {
     private Cursor cursor;
     private boolean flag = false;
     private Context mContext;
+    private Snackbar snackbar;
 
 
     @Nullable
@@ -94,14 +97,14 @@ public class MovieDetailFragment extends Fragment {
         share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                System.out.println("Concatenated String "+mContext.getResources().getString(R.string.i_share)+movie_id);
                 Intent sendIntent = new Intent();
                 sendIntent.setAction(Intent.ACTION_SEND);
-                sendIntent.putExtra(Intent.EXTRA_TEXT, "Hey checkout this movie, its awesome. Here's the link - https://www.themoviedb.org/movie/" + movie_id);
+                sendIntent.putExtra(Intent.EXTRA_TEXT,mContext.getResources().getString(R.string.i_share)+movie_id);
                 sendIntent.setType("text/plain");
                 startActivity(Intent.createChooser(sendIntent, "Share Movie with..."));
             }
         });
-
 
         final FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
         if (flag)
@@ -130,26 +133,39 @@ public class MovieDetailFragment extends Fragment {
                 }
                 else
                 {
-                    if (sMovie.getPosterPath()!=null)
+                    if (isNetworkAvailable())
                     {
-                        flag=true;
-                        fab.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_favorite));
-                        ContentValues values = new ContentValues();
-                        values.put("movie_id",movie_id);
-                        values.put("poster_path",sMovie.getPosterPath());
-                        getActivity().getContentResolver().insert(MovieProvider.CONTENT_URI, values);
-                        Snackbar.make(view,R.string.sb_saved_favorite, Snackbar.LENGTH_LONG)
-                                .setAction("Action", null).show();
-                        mFirebaseAnalytics.setUserProperty("FAV_MOVIE",sMovie.getTitle());
-                        AppWidgetManager awm = AppWidgetManager.getInstance(mContext);
-                        Intent intent = new Intent(mContext, AppWidget.class);
-                        intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-                        getActivity().sendBroadcast(intent);
+                        if (sMovie.getPosterPath()!=null)
+                        {
+                            flag=true;
+                            fab.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_favorite));
+                            ContentValues values = new ContentValues();
+                            values.put("movie_id",movie_id);
+                            values.put("poster_path",sMovie.getPosterPath());
+                            getActivity().getContentResolver().insert(MovieProvider.CONTENT_URI, values);
+                            Snackbar.make(view,R.string.sb_saved_favorite, Snackbar.LENGTH_LONG)
+                                    .setAction("Action", null).show();
+                            mFirebaseAnalytics.setUserProperty("FAV_MOVIE",sMovie.getTitle());
+                            AppWidgetManager awm = AppWidgetManager.getInstance(mContext);
+                            Intent intent = new Intent(mContext, AppWidget.class);
+                            intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+                            getActivity().sendBroadcast(intent);
+                        }
+                        else
+                        {
+                            Snackbar.make(view,R.string.sb_problem_saving_favorite, Snackbar.LENGTH_LONG)
+                                    .setAction("Action", null).show();
+                        }
                     }
                     else
                     {
-                        Snackbar.make(view,R.string.sb_problem_saving_favorite, Snackbar.LENGTH_LONG)
-                                .setAction("Action", null).show();
+                        snackbar = Snackbar.make(view, R.string.sb_no_internet, Snackbar.LENGTH_INDEFINITE);
+                        snackbar.setAction("dismiss", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                snackbar.dismiss();
+                            }
+                        }).show();
                     }
                 }
             }
@@ -192,6 +208,12 @@ public class MovieDetailFragment extends Fragment {
             }
         });
 
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
  void displayData(SingleMovie sMovie)

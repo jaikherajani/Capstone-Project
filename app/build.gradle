@@ -33,7 +33,7 @@ android {
             signingConfig signingConfigs.config
         }
         buildTypes.each {
-            it.buildConfigField 'String', 'API_KEY', '"PUT YOUR API KEY HERE"'
+            it.buildConfigField 'String', 'API_KEY', '"9f51fc0657294458eba8b6a2080ac00f"'
         }
     }
 }

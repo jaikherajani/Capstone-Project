@@ -1,7 +1,10 @@
 package com.example.jaikh.movies;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -59,7 +62,18 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new GridLayoutManager(this,2));
         recyclerView.hasFixedSize();
+        if (isNetworkAvailable())
         displayPopular(null);
+        else
+        {
+            snackbar = Snackbar.make(findViewById(R.id.fragment), R.string.sb_no_internet, Snackbar.LENGTH_INDEFINITE);
+            snackbar.setAction("dismiss", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    snackbar.dismiss();
+                }
+            }).show();
+        }
     }
 
     @Override
@@ -71,6 +85,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         savedInstanceState.putParcelable(BUNDLE_RECYCLER_LAYOUT, recyclerView.getLayoutManager().onSaveInstanceState());
     }
 
+    @Override
     public void onRestoreInstanceState(Bundle savedInstanceState) {
         // Always call the superclass so it can restore the view hierarchy
         super.onRestoreInstanceState(savedInstanceState);
@@ -98,8 +113,25 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         }
     }
 
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
     private void displayPopular(final Parcelable position) {
         status="popular";
+        if (!isNetworkAvailable())
+        {
+            snackbar = Snackbar.make(findViewById(R.id.fragment), R.string.sb_no_internet, Snackbar.LENGTH_INDEFINITE);
+            snackbar.setAction("dismiss", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    snackbar.dismiss();
+                }
+            }).show();
+        }
+
         movies.clear();
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
         Call<MoviesResponse> call = apiService.getPopularMovies(API_KEY);
@@ -129,6 +161,16 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
     private void displayRated(final Parcelable position) {
+        if (!isNetworkAvailable())
+        {
+            snackbar = Snackbar.make(findViewById(R.id.fragment), R.string.sb_no_internet, Snackbar.LENGTH_INDEFINITE);
+            snackbar.setAction("dismiss", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    snackbar.dismiss();
+                }
+            }).show();
+        }
         status="most_rated";
         movies.clear();
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
@@ -159,6 +201,16 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
     private void displayFavorites(final Parcelable position) {
+        if (!isNetworkAvailable())
+        {
+            snackbar = Snackbar.make(findViewById(R.id.fragment), R.string.sb_no_internet, Snackbar.LENGTH_INDEFINITE);
+            snackbar.setAction("dismiss", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    snackbar.dismiss();
+                }
+            }).show();
+        }
         status="favorites";
         movies.clear();
         a=0;
@@ -182,7 +234,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         }
         else
         {
-            snackbar = Snackbar.make(findViewById(R.id.fragment), R.string.sb_no_favorites, Snackbar.LENGTH_INDEFINITE);
+            displayPopular(null);
+            snackbar = Snackbar.make(findViewById(R.id.fragment), R.string.sb_no_favorites, Snackbar.LENGTH_LONG);
                     snackbar.setAction("Okay!", new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {

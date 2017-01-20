@@ -1,10 +1,15 @@
 package com.example.jaikh.movies;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -13,6 +18,7 @@ import android.widget.TextView;
  */
 
 public class MovieDetail extends AppCompatActivity {
+    private Snackbar snackbar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,7 +37,16 @@ public class MovieDetail extends AppCompatActivity {
         setContentView(R.layout.activity_movie_detail);
         getSupportFragmentManager().beginTransaction().replace(R.id.containerDetails, detailFragment).commit();
 
-
+        if (!isNetworkAvailable())
+        {
+            snackbar = Snackbar.make(findViewById(R.id.containerDetails), R.string.sb_no_internet, Snackbar.LENGTH_INDEFINITE);
+            snackbar.setAction("dismiss", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    snackbar.dismiss();
+                }
+            }).show();
+        }
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -40,6 +55,12 @@ public class MovieDetail extends AppCompatActivity {
             return true;
         }
         return true;
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
     @Override
