@@ -29,7 +29,7 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    private String API_KEY = "9f51fc0657294458eba8b6a2080ac00f";
+    private String API_KEY = BuildConfig.API_KEY;
     private List<Movie> movies = new ArrayList<>();
     private RecyclerView recyclerView;
     private DBHelper databaseHelper;
@@ -56,7 +56,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         {
             tablet=true;
         }
-        //"9f51fc0657294458eba8b6a2080ac00f"
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new GridLayoutManager(this,2));
         recyclerView.hasFixedSize();

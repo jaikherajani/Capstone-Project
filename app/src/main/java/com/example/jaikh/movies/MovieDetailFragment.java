@@ -50,7 +50,7 @@ public class MovieDetailFragment extends Fragment {
     public ImageView imageView, imageView2, trailerview;
     public Toolbar myToolbar;
     public CollapsingToolbarLayout appbar;
-    private final static String API_KEY = "9f51fc0657294458eba8b6a2080ac00f";
+    private final static String API_KEY = BuildConfig.API_KEY;
     public String key;
     FloatingActionButton viewtrailer;
     public long movie_id;

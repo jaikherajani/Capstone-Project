@@ -15,7 +15,7 @@ import java.net.URL;
  */
 
 public class FetchReview extends AsyncTask<Long, Void, String> {
-    public String apiKey= "9f51fc0657294458eba8b6a2080ac00f";
+    public String apiKey= BuildConfig.API_KEY;
     private final String LOG_TAG = FetchReview.class.getSimpleName();
     URL url;
     public String movie_id;

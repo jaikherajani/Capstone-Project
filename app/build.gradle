@@ -32,6 +32,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.config
         }
+        buildTypes.each {
+            it.buildConfigField 'String', 'API_KEY', '"PUT YOUR API KEY HERE"'
+        }
     }
 }
 
