@@ -6,8 +6,6 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.widget.RemoteViews;
 
@@ -16,22 +14,23 @@ import android.widget.RemoteViews;
  */
 public class AppWidget extends AppWidgetProvider {
 
-    public static String CLICK_ACTION = "com.example.jaikh.movies.CLICK";
+    /*public static String CLICK_ACTION = "com.example.jaikh.movies.CLICK";*/
 
-    static void updateAppWidget(Context context,AppWidgetManager appWidgetManager, int appWidgetId) {
+    void updateAppWidget(Context context,AppWidgetManager appWidgetManager, int appWidgetId) {
         System.out.println("updateAppWidget() called");
         CharSequence widgetText = context.getString(R.string.appwidget_text);
         /*Construct the RemoteViews object*/
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.app_widget);
         setRemoteAdapter(context, views);
         /** PendingIntent to launch the MainActivity when the widget was clicked **/
-        final Intent onClickIntent = new Intent(context, AppWidget.class);
-        onClickIntent.setAction(AppWidget.CLICK_ACTION);
+        Intent onClickIntent = new Intent(context, MainActivity.class);
+        onClickIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        /*onClickIntent.setAction(AppWidget.CLICK_ACTION);
         onClickIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-        onClickIntent.setData(Uri.parse(onClickIntent.toUri(Intent.URI_INTENT_SCHEME)));
-        final PendingIntent onClickPendingIntent = PendingIntent.getBroadcast(context, 0,
+        onClickIntent.setData(Uri.parse(onClickIntent.toUri(Intent.URI_INTENT_SCHEME)));*/
+        PendingIntent onClickPendingIntent = PendingIntent.getActivity(context, 0,
                 onClickIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        views.setPendingIntentTemplate(R.id.widget, onClickPendingIntent);
+        views.setPendingIntentTemplate(R.id.widget_gridView, onClickPendingIntent);
         appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId,R.id.widget_gridView);
         appWidgetManager.updateAppWidget(appWidgetId, views);
     }
@@ -75,10 +74,10 @@ public class AppWidget extends AppWidgetProvider {
     @Override
     public void onReceive(Context context, Intent intent) {
         System.out.println("onReceive() called");
-        if (intent.getAction().equals(CLICK_ACTION)) {
+        /*if (intent.getAction().equals(CLICK_ACTION)) {
             //do some really cool stuff here
             System.out.println("Widget Clicked");
-        }
+        }*/
         onUpdate(context);
         super.onReceive(context, intent);
     }
