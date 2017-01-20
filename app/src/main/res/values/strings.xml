@@ -27,4 +27,7 @@
     <string name="sb_now_showing_rated">Now Showing Most Rated</string>;
     <string name="sb_now_showing_favorites">Now Showing Favorites</string>;
     <string name="sb_no_favorites">Oh No, Seems like you haven\'t marked any movie as your favorite!</string>
+    <string name="sb_saved_favorite">Saved as Favorite</string>
+    <string name="sb_problem_saving_favorite">Something happened, please try again!</string>
+    <string name="sb_removed_favorite">Removed from Favorites</string>
 </resources>

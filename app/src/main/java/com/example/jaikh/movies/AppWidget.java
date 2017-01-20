@@ -6,6 +6,7 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.widget.RemoteViews;
 
@@ -23,7 +24,8 @@ public class AppWidget extends AppWidgetProvider {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.app_widget);
         setRemoteAdapter(context, views);
         /** PendingIntent to launch the MainActivity when the widget was clicked **/
-        Intent onClickIntent = new Intent(context, MainActivity.class);
+        Intent onClickIntent = new Intent(context, MovieDetail.class);
+        /*Bundle bundle = new Bundle();
         onClickIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         /*onClickIntent.setAction(AppWidget.CLICK_ACTION);
         onClickIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
@@ -74,6 +76,7 @@ public class AppWidget extends AppWidgetProvider {
     @Override
     public void onReceive(Context context, Intent intent) {
         System.out.println("onReceive() called");
+        System.out.println("Intent recieved - "+intent.getLongExtra("MOVIE_ID",0));
         /*if (intent.getAction().equals(CLICK_ACTION)) {
             //do some really cool stuff here
             System.out.println("Widget Clicked");

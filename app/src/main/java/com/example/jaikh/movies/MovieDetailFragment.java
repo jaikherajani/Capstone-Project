@@ -2,7 +2,9 @@ package com.example.jaikh.movies;
 
 import android.appwidget.AppWidgetManager;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -57,15 +59,20 @@ public class MovieDetailFragment extends Fragment {
     public String[] review = new String[10];
     public String[] author = new String[10];
     private FirebaseAnalytics mFirebaseAnalytics;
+    private Cursor cursor;
+    private boolean flag = false;
+    private Context mContext;
+
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView;
-        mFirebaseAnalytics = FirebaseAnalytics.getInstance(getContext());
         rootView = inflater.inflate(R.layout.movie_detail, container, false);
+        mContext = rootView.getContext();
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(mContext);
         Title = (TextView) rootView.findViewById(R.id.name);
-        databaseHelper = new DBHelper(getContext());
+        databaseHelper = new DBHelper(mContext);
         plotView = (TextView) rootView.findViewById(R.id.synopsis);
         voteAvg = (TextView) rootView.findViewById(R.id.vote_average);
         releaseDate = (TextView) rootView.findViewById(R.id.release_date);
@@ -81,6 +88,8 @@ public class MovieDetailFragment extends Fragment {
             movie = (Movie) getArguments().getSerializable("MOVIE");
             movie_id = getArguments().getLong("MOVIE_ID");
         }
+        isFavorite();
+
         final FloatingActionButton share = (FloatingActionButton) rootView.findViewById(R.id.share);
         share.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -93,32 +102,67 @@ public class MovieDetailFragment extends Fragment {
             }
         });
 
+
         final FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
-        /*if(fav.equals("YES"))
-            fab.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_favorite));
+        if (flag)
+        {
+            fab.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_favorite));
+        }
         else
-            fab.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_favorite_border));*/
+        {
+            fab.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_favorite_border));
+        }
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ContentValues values = new ContentValues();
-                values.put("movie_id",movie_id);
-                values.put("poster_path",sMovie.getPosterPath());
-                getActivity().getContentResolver().insert(MovieProvider.CONTENT_URI, values);
-                    Snackbar.make(view, "Saved as Favorite", Snackbar.LENGTH_LONG)
+                if(flag)
+                {
+                    flag = false;
+                    fab.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_favorite_border));
+                    mContext.getContentResolver().delete(MovieProvider.CONTENT_URI,Long.toString(movie_id),null);
+                    Snackbar.make(view,R.string.sb_removed_favorite, Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
-                fab.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_favorite));
-                mFirebaseAnalytics.setUserProperty("FAV_MOVIE",sMovie.getTitle());
-                AppWidgetManager awm = AppWidgetManager.getInstance(getContext());
-                Intent intent = new Intent(getContext(), AppWidget.class);
-                intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-                /*int[] ids = {R.xml.app_widget_info};
-                intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS,ids);*/
-                getActivity().sendBroadcast(intent);
+                    mFirebaseAnalytics.setUserProperty("FAV_MOVIE",sMovie.getTitle());
+                    AppWidgetManager awm = AppWidgetManager.getInstance(mContext);
+                    Intent intent = new Intent(mContext, AppWidget.class);
+                    intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+                    getActivity().sendBroadcast(intent);
+                }
+                else
+                {
+                    if (sMovie.getPosterPath()!=null)
+                    {
+                        flag=true;
+                        fab.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_favorite));
+                        ContentValues values = new ContentValues();
+                        values.put("movie_id",movie_id);
+                        values.put("poster_path",sMovie.getPosterPath());
+                        getActivity().getContentResolver().insert(MovieProvider.CONTENT_URI, values);
+                        Snackbar.make(view,R.string.sb_saved_favorite, Snackbar.LENGTH_LONG)
+                                .setAction("Action", null).show();
+                        mFirebaseAnalytics.setUserProperty("FAV_MOVIE",sMovie.getTitle());
+                        AppWidgetManager awm = AppWidgetManager.getInstance(mContext);
+                        Intent intent = new Intent(mContext, AppWidget.class);
+                        intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+                        getActivity().sendBroadcast(intent);
+                    }
+                    else
+                    {
+                        Snackbar.make(view,R.string.sb_problem_saving_favorite, Snackbar.LENGTH_LONG)
+                                .setAction("Action", null).show();
+                    }
+                }
             }
         });
 
         myToolbar = (Toolbar) rootView.findViewById(R.id.my_toolbar);
+
+        if(!MainActivity.tablet)
+        {
+            ((AppCompatActivity) getActivity()).setSupportActionBar(myToolbar);
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
         appbar = (CollapsingToolbarLayout) rootView.findViewById(R.id.toolbar_layout);
 
         //System.out.println(movie.getId());
@@ -134,15 +178,10 @@ public class MovieDetailFragment extends Fragment {
             @Override
             public void onResponse(Call<SingleMovie> call, Response<SingleMovie> response) {
                 int statusCode = response.code();
-                //movie1 = response.body().getResult();
                 sMovie = response.body();
                 displayData(sMovie);
-
                 System.out.println("sMovie : "+sMovie.getId());
                 System.out.println("single movie " + call.request().url());
-
-                //recyclerView.setAdapter(new MoviesAdapter(movies, R.layout.rv_item, getApplicationContext()));
-                //recyclerView.setAdapter(new MoviesAdapter(getApplicationContext(),movies));
             }
 
             @Override
@@ -157,20 +196,16 @@ public class MovieDetailFragment extends Fragment {
 
  void displayData(SingleMovie sMovie)
  {
-
-     ((AppCompatActivity) getActivity()).setSupportActionBar(myToolbar);
-     ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-     ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
      appbar.setTitle(sMovie.getTitle());
 
      System.out.println("sMovie : "+sMovie.getTitle());
-     Toast.makeText(getActivity(), "Showing " + sMovie.getTitle(), Toast.LENGTH_SHORT).show();
+     //Toast.makeText(getActivity(), "Showing " + sMovie.getTitle(), Toast.LENGTH_SHORT).show();
      status.setText(sMovie.getStatus());
-     Glide.with(getContext())
+     Glide.with(mContext)
              .load("https://image.tmdb.org/t/p/w780/" + sMovie.getBackdropPath())
              .into(imageView);
      System.out.println("backdrop path : " + sMovie.getBackdropPath());
-     Glide.with(getContext())
+     Glide.with(mContext)
              .load("https://image.tmdb.org/t/p/w185/" + sMovie.getPosterPath())
              .into(imageView2);
      System.out.println("poster path : " + sMovie.getPosterPath());
@@ -181,7 +216,7 @@ public class MovieDetailFragment extends Fragment {
      voteCount.setText(sMovie.getVoteCount() + " votes");
      //reviews.setText(sMovie.getReviews().getResults().toString());
      key = sMovie.getVideos().getResults().get(0).getKey();
-     Glide.with(getContext())
+     Glide.with(mContext)
              .load("https://img.youtube.com/vi/" + key + "/hqdefault.jpg")
              .fitCenter()
              .into(trailerview);
@@ -219,4 +254,18 @@ public class MovieDetailFragment extends Fragment {
      }
 
  }
+
+    private void isFavorite()
+    {
+        flag = false;
+        cursor = mContext.getContentResolver().query(MovieProvider.CONTENT_URI,null,null,null,null);
+        if (cursor.moveToFirst()) {
+            do {
+                if (cursor.getLong(0)==movie_id)
+                {
+                    flag = true;
+                }
+            } while (cursor.moveToNext());
+        }
+    }
 }

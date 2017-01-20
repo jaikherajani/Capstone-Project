@@ -1,6 +1,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="185dp"
-    android:layout_height="278dp">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minWidth="185dp"
+    android:minHeight="278dp">
 
     <ImageView
         android:id="@+id/grid_image"

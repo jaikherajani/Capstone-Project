@@ -6,6 +6,8 @@ package com.example.jaikh.movies;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +23,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
     private Context context;
     private Movie movie;
     long movie_id;
+    private FragmentManager supportFragmentManager;
 
 
     public static class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
@@ -40,9 +43,10 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
         }
     }
 
-    public MoviesAdapter(Context context,List<Movie> movies) {
+    public MoviesAdapter(Context context, List<Movie> movies, FragmentManager supportFragmentManager) {
         this.movies = movies;
         this.context = context;
+        this.supportFragmentManager = supportFragmentManager;
     }
 
 
@@ -68,10 +72,22 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
                 movie = movies.get(position);
                 System.out.println("movie "+movie_id);
                 Context context = view.getContext();
-                Intent intent = new Intent(context, MovieDetail.class);
-                intent.putExtra("MOVIE_ID", movie_id);
-                intent.putExtra("MOVIE",movie);
-                context.startActivity(intent);
+                if(MainActivity.tablet)
+                {
+                    Bundle mBundle = new Bundle();
+                    mBundle.putLong("MOVIE_ID",movie_id);
+                    mBundle.putSerializable("MOVIE",movie);
+                    MovieDetailFragment detailFragment = new MovieDetailFragment();
+                    detailFragment.setArguments(mBundle);
+                    supportFragmentManager.beginTransaction().replace(R.id.containerDetails, detailFragment).commit();
+                }
+                else
+                {
+                    Intent intent = new Intent(context, MovieDetail.class);
+                    intent.putExtra("MOVIE_ID", movie_id);
+                    intent.putExtra("MOVIE",movie);
+                    context.startActivity(intent);
+                }
             }
         });
     }

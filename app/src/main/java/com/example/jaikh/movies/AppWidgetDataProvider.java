@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Binder;
+import android.os.Bundle;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 import com.bumptech.glide.Glide;
@@ -20,6 +21,7 @@ public class AppWidgetDataProvider implements RemoteViewsService.RemoteViewsFact
     private Context context;
     private Cursor cursor;
     private Intent intent;
+    private Long movieid;
 
     //For obtaining the activity's context and intent
     public AppWidgetDataProvider(Context context, Intent intent) {
@@ -69,6 +71,7 @@ public class AppWidgetDataProvider implements RemoteViewsService.RemoteViewsFact
     @Override
     public RemoteViews getViewAt(int i) {
         /** Populate your widget's single list item **/
+        final Intent fillInIntent = new Intent();
         RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.rv_item);
         cursor.moveToPosition(i);
         try {
@@ -86,7 +89,10 @@ public class AppWidgetDataProvider implements RemoteViewsService.RemoteViewsFact
             e.printStackTrace();
         }
         //remoteViews.setTextViewText(R.id.movie_id,cursor.getString(0));
-        System.out.println("Widget : "+cursor.getString(1));
+        movieid = cursor.getLong(0);
+        fillInIntent.putExtra("MOVIE_ID",movieid);
+        System.out.println("AppWidgetDataProvier getViewAt() : URL - "+cursor.getString(1)+" ID - "+movieid);
+        remoteViews.setOnClickFillInIntent(R.id.grid_image,fillInIntent);
         return remoteViews;
     }
 
