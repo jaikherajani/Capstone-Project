@@ -10,9 +10,10 @@ import android.database.sqlite.SQLiteOpenHelper;
  * Created by jaikh on 23-04-2016.
  */
 public class DBHelper extends SQLiteOpenHelper {
-    private static final String DATABASE_NAME="popmovies.db";
-    private static final int SCHEMA=1;
-    public DBHelper(Context context){
+    private static final String DATABASE_NAME = "popmovies.db";
+    private static final int SCHEMA = 1;
+
+    public DBHelper(Context context) {
         super(context, DATABASE_NAME, null, SCHEMA);
     }
 
@@ -26,13 +27,13 @@ public class DBHelper extends SQLiteOpenHelper {
 
     }
 
-    public boolean insertData(String poster_path,long movie_id) {
+    public boolean insertData(String poster_path, long movie_id) {
 
         SQLiteDatabase db = this.getWritableDatabase();
 
         //Insert data in table
         ContentValues contentValues = new ContentValues();
-        contentValues.put("poster_path",poster_path);
+        contentValues.put("poster_path", poster_path);
         contentValues.put("movie_id", movie_id);
         long result = db.insert("favmovies", null, contentValues);
 
@@ -43,11 +44,12 @@ public class DBHelper extends SQLiteOpenHelper {
             return true;
 
     }
+
     public Cursor getData() {
         SQLiteDatabase db = this.getReadableDatabase();
 
         //Get data from table
-        String query ="SELECT * FROM FAVMOVIES;";
+        String query = "SELECT * FROM FAVMOVIES;";
         Cursor cursor = db.rawQuery(query, null);
         return cursor;
     }

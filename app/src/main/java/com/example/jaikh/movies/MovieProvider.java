@@ -2,12 +2,10 @@ package com.example.jaikh.movies;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;
-import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
-import android.support.annotation.Nullable;
 
 import java.util.HashMap;
 
@@ -20,8 +18,8 @@ public class MovieProvider extends ContentProvider {
     private static final String AUTHORITY = "com.example.jaikh.moviesprovider";
     private static final String BASE_PATH = "movies";
     public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + BASE_PATH);
-    private DBHelper mDatabaseHelper;
     private static HashMap<String, String> PROJECTION_MAP;
+    private DBHelper mDatabaseHelper;
 
     @Override
     public boolean onCreate() {

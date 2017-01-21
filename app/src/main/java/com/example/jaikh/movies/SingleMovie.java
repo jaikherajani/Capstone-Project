@@ -1,14 +1,14 @@
-
 package com.example.jaikh.movies;
 
-import java.io.Serializable;
-import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class SingleMovie implements Serializable
-{
+import java.io.Serializable;
+import java.util.List;
 
+public class SingleMovie implements Serializable {
+
+    private final static long serialVersionUID = -3030483372995064162L;
     @SerializedName("adult")
     @Expose
     private Boolean adult;
@@ -87,17 +87,14 @@ public class SingleMovie implements Serializable
     @SerializedName("videos")
     @Expose
     private Videos videos;
-    private final static long serialVersionUID = -3030483372995064162L;
 
     /**
      * No args constructor for use in serialization
-     * 
      */
     public SingleMovie() {
     }
 
     /**
-     * 
      * @param budget
      * @param genres
      * @param spokenLanguages
@@ -156,468 +153,364 @@ public class SingleMovie implements Serializable
     }
 
     /**
-     * 
-     * @return
-     *     The adult
+     * @return The adult
      */
     public Boolean getAdult() {
         return adult;
     }
 
     /**
-     * 
-     * @param adult
-     *     The adult
+     * @param adult The adult
      */
     public void setAdult(Boolean adult) {
         this.adult = adult;
     }
 
     /**
-     * 
-     * @return
-     *     The backdropPath
+     * @return The backdropPath
      */
     public String getBackdropPath() {
         return backdropPath;
     }
 
     /**
-     * 
-     * @param backdropPath
-     *     The backdrop_path
+     * @param backdropPath The backdrop_path
      */
     public void setBackdropPath(String backdropPath) {
         this.backdropPath = backdropPath;
     }
 
     /**
-     * 
-     * @return
-     *     The belongsToCollection
+     * @return The belongsToCollection
      */
     public Object getBelongsToCollection() {
         return belongsToCollection;
     }
 
     /**
-     * 
-     * @param belongsToCollection
-     *     The belongs_to_collection
+     * @param belongsToCollection The belongs_to_collection
      */
     public void setBelongsToCollection(Object belongsToCollection) {
         this.belongsToCollection = belongsToCollection;
     }
 
     /**
-     * 
-     * @return
-     *     The budget
+     * @return The budget
      */
     public Long getBudget() {
         return budget;
     }
 
     /**
-     * 
-     * @param budget
-     *     The budget
+     * @param budget The budget
      */
     public void setBudget(Long budget) {
         this.budget = budget;
     }
 
     /**
-     * 
-     * @return
-     *     The genres
+     * @return The genres
      */
     public List<Genre> getGenres() {
         return genres;
     }
 
     /**
-     * 
-     * @param genres
-     *     The genres
+     * @param genres The genres
      */
     public void setGenres(List<Genre> genres) {
         this.genres = genres;
     }
 
     /**
-     * 
-     * @return
-     *     The homepage
+     * @return The homepage
      */
     public String getHomepage() {
         return homepage;
     }
 
     /**
-     * 
-     * @param homepage
-     *     The homepage
+     * @param homepage The homepage
      */
     public void setHomepage(String homepage) {
         this.homepage = homepage;
     }
 
     /**
-     * 
-     * @return
-     *     The id
+     * @return The id
      */
     public Long getId() {
         return id;
     }
 
     /**
-     * 
-     * @param id
-     *     The id
+     * @param id The id
      */
     public void setId(Long id) {
         this.id = id;
     }
 
     /**
-     * 
-     * @return
-     *     The imdbId
+     * @return The imdbId
      */
     public String getImdbId() {
         return imdbId;
     }
 
     /**
-     * 
-     * @param imdbId
-     *     The imdb_id
+     * @param imdbId The imdb_id
      */
     public void setImdbId(String imdbId) {
         this.imdbId = imdbId;
     }
 
     /**
-     * 
-     * @return
-     *     The originalLanguage
+     * @return The originalLanguage
      */
     public String getOriginalLanguage() {
         return originalLanguage;
     }
 
     /**
-     * 
-     * @param originalLanguage
-     *     The original_language
+     * @param originalLanguage The original_language
      */
     public void setOriginalLanguage(String originalLanguage) {
         this.originalLanguage = originalLanguage;
     }
 
     /**
-     * 
-     * @return
-     *     The originalTitle
+     * @return The originalTitle
      */
     public String getOriginalTitle() {
         return originalTitle;
     }
 
     /**
-     * 
-     * @param originalTitle
-     *     The original_title
+     * @param originalTitle The original_title
      */
     public void setOriginalTitle(String originalTitle) {
         this.originalTitle = originalTitle;
     }
 
     /**
-     * 
-     * @return
-     *     The overview
+     * @return The overview
      */
     public String getOverview() {
         return overview;
     }
 
     /**
-     * 
-     * @param overview
-     *     The overview
+     * @param overview The overview
      */
     public void setOverview(String overview) {
         this.overview = overview;
     }
 
     /**
-     * 
-     * @return
-     *     The popularity
+     * @return The popularity
      */
     public Double getPopularity() {
         return popularity;
     }
 
     /**
-     * 
-     * @param popularity
-     *     The popularity
+     * @param popularity The popularity
      */
     public void setPopularity(Double popularity) {
         this.popularity = popularity;
     }
 
     /**
-     * 
-     * @return
-     *     The posterPath
+     * @return The posterPath
      */
     public String getPosterPath() {
         return posterPath;
     }
 
     /**
-     * 
-     * @param posterPath
-     *     The poster_path
+     * @param posterPath The poster_path
      */
     public void setPosterPath(String posterPath) {
         this.posterPath = posterPath;
     }
 
     /**
-     * 
-     * @return
-     *     The productionCompanies
+     * @return The productionCompanies
      */
     public List<ProductionCompany> getProductionCompanies() {
         return productionCompanies;
     }
 
     /**
-     * 
-     * @param productionCompanies
-     *     The production_companies
+     * @param productionCompanies The production_companies
      */
     public void setProductionCompanies(List<ProductionCompany> productionCompanies) {
         this.productionCompanies = productionCompanies;
     }
 
     /**
-     * 
-     * @return
-     *     The productionCountries
+     * @return The productionCountries
      */
     public List<ProductionCountry> getProductionCountries() {
         return productionCountries;
     }
 
     /**
-     * 
-     * @param productionCountries
-     *     The production_countries
+     * @param productionCountries The production_countries
      */
     public void setProductionCountries(List<ProductionCountry> productionCountries) {
         this.productionCountries = productionCountries;
     }
 
     /**
-     * 
-     * @return
-     *     The releaseDate
+     * @return The releaseDate
      */
     public String getReleaseDate() {
         return releaseDate;
     }
 
     /**
-     * 
-     * @param releaseDate
-     *     The release_date
+     * @param releaseDate The release_date
      */
     public void setReleaseDate(String releaseDate) {
         this.releaseDate = releaseDate;
     }
 
     /**
-     * 
-     * @return
-     *     The revenue
+     * @return The revenue
      */
     public Long getRevenue() {
         return revenue;
     }
 
     /**
-     * 
-     * @param revenue
-     *     The revenue
+     * @param revenue The revenue
      */
     public void setRevenue(Long revenue) {
         this.revenue = revenue;
     }
 
     /**
-     * 
-     * @return
-     *     The runtime
+     * @return The runtime
      */
     public Long getRuntime() {
         return runtime;
     }
 
     /**
-     * 
-     * @param runtime
-     *     The runtime
+     * @param runtime The runtime
      */
     public void setRuntime(Long runtime) {
         this.runtime = runtime;
     }
 
     /**
-     * 
-     * @return
-     *     The spokenLanguages
+     * @return The spokenLanguages
      */
     public List<SpokenLanguage> getSpokenLanguages() {
         return spokenLanguages;
     }
 
     /**
-     * 
-     * @param spokenLanguages
-     *     The spoken_languages
+     * @param spokenLanguages The spoken_languages
      */
     public void setSpokenLanguages(List<SpokenLanguage> spokenLanguages) {
         this.spokenLanguages = spokenLanguages;
     }
 
     /**
-     * 
-     * @return
-     *     The status
+     * @return The status
      */
     public String getStatus() {
         return status;
     }
 
     /**
-     * 
-     * @param status
-     *     The status
+     * @param status The status
      */
     public void setStatus(String status) {
         this.status = status;
     }
 
     /**
-     * 
-     * @return
-     *     The tagline
+     * @return The tagline
      */
     public String getTagline() {
         return tagline;
     }
 
     /**
-     * 
-     * @param tagline
-     *     The tagline
+     * @param tagline The tagline
      */
     public void setTagline(String tagline) {
         this.tagline = tagline;
     }
 
     /**
-     * 
-     * @return
-     *     The title
+     * @return The title
      */
     public String getTitle() {
         return title;
     }
 
     /**
-     * 
-     * @param title
-     *     The title
+     * @param title The title
      */
     public void setTitle(String title) {
         this.title = title;
     }
 
     /**
-     * 
-     * @return
-     *     The video
+     * @return The video
      */
     public Boolean getVideo() {
         return video;
     }
 
     /**
-     * 
-     * @param video
-     *     The video
+     * @param video The video
      */
     public void setVideo(Boolean video) {
         this.video = video;
     }
 
     /**
-     * 
-     * @return
-     *     The voteAverage
+     * @return The voteAverage
      */
     public Double getVoteAverage() {
         return voteAverage;
     }
 
     /**
-     * 
-     * @param voteAverage
-     *     The vote_average
+     * @param voteAverage The vote_average
      */
     public void setVoteAverage(Double voteAverage) {
         this.voteAverage = voteAverage;
     }
 
     /**
-     * 
-     * @return
-     *     The voteCount
+     * @return The voteCount
      */
     public Long getVoteCount() {
         return voteCount;
     }
 
     /**
-     * 
-     * @param voteCount
-     *     The vote_count
+     * @param voteCount The vote_count
      */
     public void setVoteCount(Long voteCount) {
         this.voteCount = voteCount;
     }
 
     /**
-     * 
-     * @return
-     *     The videos
+     * @return The videos
      */
     public Videos getVideos() {
         return videos;
     }
 
     /**
-     * 
-     * @param videos
-     *     The videos
+     * @param videos The videos
      */
     public void setVideos(Videos videos) {
         this.videos = videos;

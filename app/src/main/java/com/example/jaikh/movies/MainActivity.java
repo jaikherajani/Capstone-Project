@@ -17,14 +17,13 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-
-import com.google.firebase.analytics.FirebaseAnalytics;
+import android.view.View;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -32,6 +31,12 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
+    private static final String BUNDLE_RECYCLER_LAYOUT = "MainActivity.recycler.layout";
+    public static boolean tablet = false;
+    public Long[] b = new Long[20];
+    public String[] url = new String[20];
+    public int a;
+    public Cursor favCursor;
     private String API_KEY = BuildConfig.API_KEY;
     private List<Movie> movies = new ArrayList<>();
     private RecyclerView recyclerView;
@@ -39,12 +44,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private String status;
     private Movie fMovie;
     private Snackbar snackbar;
-    public Long[] b = new Long[20];
-    public String[] url = new String[20];
-    public int a;
-    public static boolean tablet=false;
-    public Cursor favCursor;
-    private static final String BUNDLE_RECYCLER_LAYOUT = "MainActivity.recycler.layout";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,18 +53,16 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         databaseHelper = new DBHelper(this);
-        getSupportLoaderManager().initLoader(0,null,this);
-        if(findViewById(R.id.containerDetails)!=null)
-        {
-            tablet=true;
+        getSupportLoaderManager().initLoader(0, null, this);
+        if (findViewById(R.id.containerDetails) != null) {
+            tablet = true;
         }
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        recyclerView.setLayoutManager(new GridLayoutManager(this,2));
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         recyclerView.hasFixedSize();
         if (isNetworkAvailable())
-        displayPopular(null);
-        else
-        {
+            displayPopular(null);
+        else {
             snackbar = Snackbar.make(findViewById(R.id.fragment), R.string.sb_no_internet, Snackbar.LENGTH_INDEFINITE);
             snackbar.setAction("dismiss", new View.OnClickListener() {
                 @Override
@@ -80,8 +77,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
         // Save the user's current game state
-        savedInstanceState.putString("STATUS",status);
-        System.out.println("STATUS SENT IS "+status);
+        savedInstanceState.putString("STATUS", status);
+        System.out.println("STATUS SENT IS " + status);
         savedInstanceState.putParcelable(BUNDLE_RECYCLER_LAYOUT, recyclerView.getLayoutManager().onSaveInstanceState());
     }
 
@@ -89,16 +86,15 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public void onRestoreInstanceState(Bundle savedInstanceState) {
         // Always call the superclass so it can restore the view hierarchy
         super.onRestoreInstanceState(savedInstanceState);
-        if(findViewById(R.id.containerDetails)!=null)
-            tablet=true;
+        if (findViewById(R.id.containerDetails) != null)
+            tablet = true;
         else
             tablet = false;
         if (savedInstanceState != null) {
             Parcelable savedRecyclerLayoutState = savedInstanceState.getParcelable(BUNDLE_RECYCLER_LAYOUT);
             String new_status = savedInstanceState.getString("STATUS");
-            System.out.println("STATUS RECEIVED IS "+new_status);
-            switch (new_status)
-            {
+            System.out.println("STATUS RECEIVED IS " + new_status);
+            switch (new_status) {
                 case "popular":
                     displayPopular(savedRecyclerLayoutState);
                     break;
@@ -120,9 +116,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
     private void displayPopular(final Parcelable position) {
-        status="popular";
-        if (!isNetworkAvailable())
-        {
+        status = "popular";
+        if (!isNetworkAvailable()) {
             snackbar = Snackbar.make(findViewById(R.id.fragment), R.string.sb_no_internet, Snackbar.LENGTH_INDEFINITE);
             snackbar.setAction("dismiss", new View.OnClickListener() {
                 @Override
@@ -140,8 +135,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             public void onResponse(Call<MoviesResponse> call, Response<MoviesResponse> response) {
                 int statusCode = response.code();
                 movies = response.body().getResults();
-                recyclerView.setAdapter(new MoviesAdapter(getApplicationContext(),movies,getSupportFragmentManager()));
-                if(position !=null)
+                recyclerView.setAdapter(new MoviesAdapter(getApplicationContext(), movies, getSupportFragmentManager()));
+                if (position != null)
                     recyclerView.getLayoutManager().onRestoreInstanceState(position);
             }
 
@@ -161,8 +156,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
     private void displayRated(final Parcelable position) {
-        if (!isNetworkAvailable())
-        {
+        if (!isNetworkAvailable()) {
             snackbar = Snackbar.make(findViewById(R.id.fragment), R.string.sb_no_internet, Snackbar.LENGTH_INDEFINITE);
             snackbar.setAction("dismiss", new View.OnClickListener() {
                 @Override
@@ -171,7 +165,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 }
             }).show();
         }
-        status="most_rated";
+        status = "most_rated";
         movies.clear();
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
         Call<MoviesResponse> call = apiService.getTopRatedMovies(API_KEY);
@@ -180,8 +174,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             public void onResponse(Call<MoviesResponse> call, Response<MoviesResponse> response) {
                 int statusCode = response.code();
                 movies = response.body().getResults();
-                recyclerView.setAdapter(new MoviesAdapter(getApplicationContext(),movies, getSupportFragmentManager()));
-                if(position !=null)
+                recyclerView.setAdapter(new MoviesAdapter(getApplicationContext(), movies, getSupportFragmentManager()));
+                if (position != null)
                     recyclerView.getLayoutManager().onRestoreInstanceState(position);
             }
 
@@ -201,8 +195,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
     private void displayFavorites(final Parcelable position) {
-        if (!isNetworkAvailable())
-        {
+        if (!isNetworkAvailable()) {
             snackbar = Snackbar.make(findViewById(R.id.fragment), R.string.sb_no_internet, Snackbar.LENGTH_INDEFINITE);
             snackbar.setAction("dismiss", new View.OnClickListener() {
                 @Override
@@ -211,17 +204,17 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 }
             }).show();
         }
-        status="favorites";
+        status = "favorites";
         movies.clear();
-        a=0;
+        a = 0;
         if (favCursor.moveToFirst()) {
             do {
                 url[a] = favCursor.getString(1);
                 b[a] = favCursor.getLong(0);
-                fMovie = new Movie(url[a],b[a]);
-                movies.add(a,fMovie);
-                recyclerView.setAdapter(new MoviesAdapter(getApplicationContext(),movies, getSupportFragmentManager()));
-                if(position !=null)
+                fMovie = new Movie(url[a], b[a]);
+                movies.add(a, fMovie);
+                recyclerView.setAdapter(new MoviesAdapter(getApplicationContext(), movies, getSupportFragmentManager()));
+                if (position != null)
                     recyclerView.getLayoutManager().onRestoreInstanceState(position);
             } while (favCursor.moveToNext());
             snackbar = Snackbar.make(findViewById(R.id.fragment), R.string.sb_now_showing_favorites, Snackbar.LENGTH_LONG);
@@ -231,17 +224,15 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     snackbar.dismiss();
                 }
             }).show();
-        }
-        else
-        {
+        } else {
             displayPopular(null);
             snackbar = Snackbar.make(findViewById(R.id.fragment), R.string.sb_no_favorites, Snackbar.LENGTH_LONG);
-                    snackbar.setAction("Okay!", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            snackbar.dismiss();
-                        }
-                    }).show();
+            snackbar.setAction("Okay!", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    snackbar.dismiss();
+                }
+            }).show();
         }
 
     }
@@ -259,22 +250,21 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        switch (id)
-        {
-            case R.id.action_popular :
+        switch (id) {
+            case R.id.action_popular:
                 status = "popular";
                 displayPopular(null);
                 break;
-            case R.id.action_most_rated :
+            case R.id.action_most_rated:
                 status = "most_rated";
                 displayRated(null);
                 break;
-            case R.id.action_favorite :
+            case R.id.action_favorite:
                 status = "favorites";
                 displayFavorites(null);
                 break;
-            case R.id.action_feedback :
-                startActivity(new Intent(this,Feedback.class));
+            case R.id.action_feedback:
+                startActivity(new Intent(this, Feedback.class));
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -283,7 +273,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         Uri contentUri = MovieProvider.CONTENT_URI;
-        return new CursorLoader(this,contentUri,null,null,null,null);
+        return new CursorLoader(this, contentUri, null, null, null, null);
     }
 
     @Override

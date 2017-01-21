@@ -1,13 +1,13 @@
-
 package com.example.jaikh.movies;
 
-import java.io.Serializable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Result implements Serializable
-{
+import java.io.Serializable;
 
+public class Result implements Serializable {
+
+    private final static long serialVersionUID = 5195667926127631986L;
     @SerializedName("id")
     @Expose
     private String id;
@@ -32,17 +32,14 @@ public class Result implements Serializable
     @SerializedName("type")
     @Expose
     private String type;
-    private final static long serialVersionUID = 5195667926127631986L;
 
     /**
      * No args constructor for use in serialization
-     * 
      */
     public Result() {
     }
 
     /**
-     * 
      * @param site
      * @param iso6391
      * @param id
@@ -65,144 +62,112 @@ public class Result implements Serializable
     }
 
     /**
-     * 
-     * @return
-     *     The id
+     * @return The id
      */
     public String getId() {
         return id;
     }
 
     /**
-     * 
-     * @param id
-     *     The id
+     * @param id The id
      */
     public void setId(String id) {
         this.id = id;
     }
 
     /**
-     * 
-     * @return
-     *     The iso6391
+     * @return The iso6391
      */
     public String getIso6391() {
         return iso6391;
     }
 
     /**
-     * 
-     * @param iso6391
-     *     The iso_639_1
+     * @param iso6391 The iso_639_1
      */
     public void setIso6391(String iso6391) {
         this.iso6391 = iso6391;
     }
 
     /**
-     * 
-     * @return
-     *     The iso31661
+     * @return The iso31661
      */
     public String getIso31661() {
         return iso31661;
     }
 
     /**
-     * 
-     * @param iso31661
-     *     The iso_3166_1
+     * @param iso31661 The iso_3166_1
      */
     public void setIso31661(String iso31661) {
         this.iso31661 = iso31661;
     }
 
     /**
-     * 
-     * @return
-     *     The key
+     * @return The key
      */
     public String getKey() {
         return key;
     }
 
     /**
-     * 
-     * @param key
-     *     The key
+     * @param key The key
      */
     public void setKey(String key) {
         this.key = key;
     }
 
     /**
-     * 
-     * @return
-     *     The name
+     * @return The name
      */
     public String getName() {
         return name;
     }
 
     /**
-     * 
-     * @param name
-     *     The name
+     * @param name The name
      */
     public void setName(String name) {
         this.name = name;
     }
 
     /**
-     * 
-     * @return
-     *     The site
+     * @return The site
      */
     public String getSite() {
         return site;
     }
 
     /**
-     * 
-     * @param site
-     *     The site
+     * @param site The site
      */
     public void setSite(String site) {
         this.site = site;
     }
 
     /**
-     * 
-     * @return
-     *     The size
+     * @return The size
      */
     public Long getSize() {
         return size;
     }
 
     /**
-     * 
-     * @param size
-     *     The size
+     * @param size The size
      */
     public void setSize(Long size) {
         this.size = size;
     }
 
     /**
-     * 
-     * @return
-     *     The type
+     * @return The type
      */
     public String getType() {
         return type;
     }
 
     /**
-     * 
-     * @param type
-     *     The type
+     * @param type The type
      */
     public void setType(String type) {
         this.type = type;

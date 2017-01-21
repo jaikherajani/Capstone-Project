@@ -23,7 +23,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.analytics.FirebaseAnalytics;
@@ -32,8 +31,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import retrofit2.Call;
@@ -46,20 +43,20 @@ import retrofit2.Response;
 
 public class MovieDetailFragment extends Fragment {
 
-    private Movie movie;
-    private SingleMovie sMovie;
-    public TextView plotView, voteAvg, releaseDate, Title, reviews, voteCount,status;
+    private final static String API_KEY = BuildConfig.API_KEY;
+    public TextView plotView, voteAvg, releaseDate, Title, reviews, voteCount, status;
     public ImageView imageView, imageView2, trailerview;
     public Toolbar myToolbar;
     public CollapsingToolbarLayout appbar;
-    private final static String API_KEY = BuildConfig.API_KEY;
     public String key;
-    FloatingActionButton viewtrailer;
     public long movie_id;
-    private DBHelper databaseHelper;
-    private String resultJSON = null;
     public String[] review = new String[10];
     public String[] author = new String[10];
+    FloatingActionButton viewtrailer;
+    private Movie movie;
+    private SingleMovie sMovie;
+    private DBHelper databaseHelper;
+    private String resultJSON = null;
     private FirebaseAnalytics mFirebaseAnalytics;
     private Cursor cursor;
     private boolean flag = false;
@@ -97,68 +94,56 @@ public class MovieDetailFragment extends Fragment {
         share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                System.out.println("Concatenated String "+mContext.getResources().getString(R.string.i_share)+movie_id);
+                System.out.println("Concatenated String " + mContext.getResources().getString(R.string.i_share) + movie_id);
                 Intent sendIntent = new Intent();
                 sendIntent.setAction(Intent.ACTION_SEND);
-                sendIntent.putExtra(Intent.EXTRA_TEXT,mContext.getResources().getString(R.string.i_share)+movie_id);
+                sendIntent.putExtra(Intent.EXTRA_TEXT, mContext.getResources().getString(R.string.i_share) + movie_id);
                 sendIntent.setType("text/plain");
                 startActivity(Intent.createChooser(sendIntent, "Share Movie with..."));
             }
         });
 
         final FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
-        if (flag)
-        {
+        if (flag) {
             fab.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_favorite));
-        }
-        else
-        {
+        } else {
             fab.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_favorite_border));
         }
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(flag)
-                {
+                if (flag) {
                     flag = false;
                     fab.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_favorite_border));
-                    mContext.getContentResolver().delete(MovieProvider.CONTENT_URI,Long.toString(movie_id),null);
-                    Snackbar.make(view,R.string.sb_removed_favorite, Snackbar.LENGTH_LONG)
+                    mContext.getContentResolver().delete(MovieProvider.CONTENT_URI, Long.toString(movie_id), null);
+                    Snackbar.make(view, R.string.sb_removed_favorite, Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
-                    mFirebaseAnalytics.setUserProperty("FAV_MOVIE",sMovie.getTitle());
+                    mFirebaseAnalytics.setUserProperty("FAV_MOVIE", sMovie.getTitle());
                     AppWidgetManager awm = AppWidgetManager.getInstance(mContext);
                     Intent intent = new Intent(mContext, AppWidget.class);
                     intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
                     getActivity().sendBroadcast(intent);
-                }
-                else
-                {
-                    if (isNetworkAvailable())
-                    {
-                        if (sMovie.getPosterPath()!=null)
-                        {
-                            flag=true;
+                } else {
+                    if (isNetworkAvailable()) {
+                        if (sMovie.getPosterPath() != null) {
+                            flag = true;
                             fab.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_favorite));
                             ContentValues values = new ContentValues();
-                            values.put("movie_id",movie_id);
-                            values.put("poster_path",sMovie.getPosterPath());
+                            values.put("movie_id", movie_id);
+                            values.put("poster_path", sMovie.getPosterPath());
                             getActivity().getContentResolver().insert(MovieProvider.CONTENT_URI, values);
-                            Snackbar.make(view,R.string.sb_saved_favorite, Snackbar.LENGTH_LONG)
+                            Snackbar.make(view, R.string.sb_saved_favorite, Snackbar.LENGTH_LONG)
                                     .setAction("Action", null).show();
-                            mFirebaseAnalytics.setUserProperty("FAV_MOVIE",sMovie.getTitle());
+                            mFirebaseAnalytics.setUserProperty("FAV_MOVIE", sMovie.getTitle());
                             AppWidgetManager awm = AppWidgetManager.getInstance(mContext);
                             Intent intent = new Intent(mContext, AppWidget.class);
                             intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
                             getActivity().sendBroadcast(intent);
-                        }
-                        else
-                        {
-                            Snackbar.make(view,R.string.sb_problem_saving_favorite, Snackbar.LENGTH_LONG)
+                        } else {
+                            Snackbar.make(view, R.string.sb_problem_saving_favorite, Snackbar.LENGTH_LONG)
                                     .setAction("Action", null).show();
                         }
-                    }
-                    else
-                    {
+                    } else {
                         snackbar = Snackbar.make(view, R.string.sb_no_internet, Snackbar.LENGTH_INDEFINITE);
                         snackbar.setAction("dismiss", new View.OnClickListener() {
                             @Override
@@ -173,8 +158,7 @@ public class MovieDetailFragment extends Fragment {
 
         myToolbar = (Toolbar) rootView.findViewById(R.id.my_toolbar);
 
-        if(!MainActivity.tablet)
-        {
+        if (!MainActivity.tablet) {
             ((AppCompatActivity) getActivity()).setSupportActionBar(myToolbar);
             ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -186,8 +170,7 @@ public class MovieDetailFragment extends Fragment {
         return rootView;
     }
 
-    void getData(long movie_id)
-    {
+    void getData(long movie_id) {
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
         Call<SingleMovie> call = apiService.getMovieDetails(movie_id, API_KEY, "videos");
         call.enqueue(new Callback<SingleMovie>() {
@@ -196,7 +179,7 @@ public class MovieDetailFragment extends Fragment {
                 int statusCode = response.code();
                 sMovie = response.body();
                 displayData(sMovie);
-                System.out.println("sMovie : "+sMovie.getId());
+                System.out.println("sMovie : " + sMovie.getId());
                 System.out.println("single movie " + call.request().url());
             }
 
@@ -216,75 +199,78 @@ public class MovieDetailFragment extends Fragment {
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
- void displayData(SingleMovie sMovie)
- {
-     appbar.setTitle(sMovie.getTitle());
+    void displayData(SingleMovie sMovie) {
+        appbar.setTitle(sMovie.getTitle());
 
-     System.out.println("sMovie : "+sMovie.getTitle());
-     //Toast.makeText(getActivity(), "Showing " + sMovie.getTitle(), Toast.LENGTH_SHORT).show();
-     status.setText(sMovie.getStatus());
-     Glide.with(mContext)
-             .load("https://image.tmdb.org/t/p/w780/" + sMovie.getBackdropPath())
-             .into(imageView);
-     System.out.println("backdrop path : " + sMovie.getBackdropPath());
-     Glide.with(mContext)
-             .load("https://image.tmdb.org/t/p/w185/" + sMovie.getPosterPath())
-             .into(imageView2);
-     System.out.println("poster path : " + sMovie.getPosterPath());
-     Title.setText(sMovie.getTitle());
-     releaseDate.setText(sMovie.getReleaseDate());
-     voteAvg.setText(sMovie.getVoteAverage().toString());
-     plotView.setText(sMovie.getOverview());
-     voteCount.setText(sMovie.getVoteCount() + " votes");
-     //reviews.setText(sMovie.getReviews().getResults().toString());
-     key = sMovie.getVideos().getResults().get(0).getKey();
-     Glide.with(mContext)
-             .load("https://img.youtube.com/vi/" + key + "/hqdefault.jpg")
-             .fitCenter()
-             .into(trailerview);
-     System.out.println("trailer : " + "http://img.youtube.com/vi/" + key + "/hqdefault.jpg");
-     viewtrailer.setOnClickListener(new View.OnClickListener() {
-         @Override
-         public void onClick(View view) {
-             Intent intent1 = new Intent(Intent.ACTION_VIEW, Uri.parse("http://m.youtube.com/watch?v=" + key));
-             startActivity(intent1);
-         }
-     });
+        System.out.println("sMovie : " + sMovie.getTitle());
+        //Toast.makeText(getActivity(), "Showing " + sMovie.getTitle(), Toast.LENGTH_SHORT).show();
+        status.setText(sMovie.getStatus());
+        Glide.with(mContext)
+                .load("https://image.tmdb.org/t/p/w780/" + sMovie.getBackdropPath())
+                .into(imageView);
+        System.out.println("backdrop path : " + sMovie.getBackdropPath());
+        Glide.with(mContext)
+                .load("https://image.tmdb.org/t/p/w185/" + sMovie.getPosterPath())
+                .into(imageView2);
+        System.out.println("poster path : " + sMovie.getPosterPath());
+        Title.setText(sMovie.getTitle());
+        releaseDate.setText(sMovie.getReleaseDate());
+        voteAvg.setText(sMovie.getVoteAverage().toString());
+        plotView.setText(sMovie.getOverview());
+        voteCount.setText(sMovie.getVoteCount() + " votes");
+        //reviews.setText(sMovie.getReviews().getResults().toString());
+        if (sMovie.getVideo()) {
+            key = sMovie.getVideos().getResults().get(0).getKey();
+            Glide.with(mContext)
+                    .load("https://img.youtube.com/vi/" + key + "/hqdefault.jpg")
+                    .fitCenter()
+                    .into(trailerview);
+            System.out.println("trailer : " + "http://img.youtube.com/vi/" + key + "/hqdefault.jpg");
+            viewtrailer.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent1 = new Intent(Intent.ACTION_VIEW, Uri.parse("http://m.youtube.com/watch?v=" + key));
+                    startActivity(intent1);
+                }
+            });
+        } else {
+            key = null;
+            viewtrailer.setVisibility(View.GONE);
+            trailerview.setVisibility(View.GONE);
+        }
 
-     FetchReview task1 = new FetchReview();
-     reviews.setText("");
-     try {
-         resultJSON = task1.execute(movie_id).get();
-         if (resultJSON != null) {
-             JSONObject movie = new JSONObject(resultJSON);
-             JSONArray movieDetails = movie.getJSONArray("results");
-             for (int i = 0; i <=5; i++) {
-                 JSONObject mov_reviews = movieDetails.getJSONObject(i);
-                 author[i] = mov_reviews.getString("author");
-                 review[i] = mov_reviews.getString("content");
-                 reviews.append("\nReview By - "+author[i]+"\n"+review[i]+"\n");
-                 reviews.append("------------------------------------------------------------------------------------\n");
-             }
-         }
-     }
-     catch (InterruptedException e) {
-         e.printStackTrace();
-     } catch (ExecutionException e) {
-         e.printStackTrace();
-     } catch (JSONException e) {
-         e.printStackTrace();
-     }
 
- }
+        FetchReview task1 = new FetchReview();
+        reviews.setText("");
+        try {
+            resultJSON = task1.execute(movie_id).get();
+            if (resultJSON != null) {
+                JSONObject movie = new JSONObject(resultJSON);
+                JSONArray movieDetails = movie.getJSONArray("results");
+                for (int i = 0; i <= 5; i++) {
+                    JSONObject mov_reviews = movieDetails.getJSONObject(i);
+                    author[i] = mov_reviews.getString("author");
+                    review[i] = mov_reviews.getString("content");
+                    reviews.append("\nReview By - " + author[i] + "\n" + review[i] + "\n");
+                    reviews.append("------------------------------------------------------------------------------------\n");
+                }
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
-    private void isFavorite()
-    {
+    }
+
+    private void isFavorite() {
         flag = false;
-        cursor = mContext.getContentResolver().query(MovieProvider.CONTENT_URI,null,null,null,null);
+        cursor = mContext.getContentResolver().query(MovieProvider.CONTENT_URI, null, null, null, null);
         if (cursor.moveToFirst()) {
             do {
-                if (cursor.getLong(0)==movie_id)
-                {
+                if (cursor.getLong(0) == movie_id) {
                     flag = true;
                 }
             } while (cursor.moveToNext());

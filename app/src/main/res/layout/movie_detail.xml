@@ -23,22 +23,23 @@
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <ImageView
+                android:id="@+id/big_poster"
                 android:layout_width="match_parent"
                 android:layout_height="439dp"
-                android:scaleType="centerCrop"
                 android:adjustViewBounds="true"
-                android:id="@+id/big_poster" />
+                android:scaleType="centerCrop" />
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/my_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
+                android:layout_marginRight="@dimen/activity_horizontal_margin"
                 app:layout_collapseMode="pin"
-                app:popupTheme="@style/PopupOverlay"
-                android:layout_marginRight="@dimen/activity_horizontal_margin" />
+                app:popupTheme="@style/PopupOverlay" />
 
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
+
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
@@ -61,7 +62,8 @@
         app:layout_anchor="@id/app_bar"
         app:layout_anchorGravity="bottom|start" />
 
-    <include layout="@layout/content_movie_detail"
-        android:id="@+id/containerDetails"/>
+    <include
+        android:id="@+id/containerDetails"
+        layout="@layout/content_movie_detail" />
 
 </android.support.design.widget.CoordinatorLayout>

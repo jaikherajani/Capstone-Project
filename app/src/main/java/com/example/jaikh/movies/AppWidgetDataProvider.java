@@ -4,12 +4,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Binder;
-import android.os.Bundle;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
+
 import com.bumptech.glide.Glide;
+
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -29,7 +29,7 @@ public class AppWidgetDataProvider implements RemoteViewsService.RemoteViewsFact
         this.intent = intent;
     }
 
-    private void initCursor(){
+    private void initCursor() {
         System.out.println("initCursor() called");
         if (cursor != null) {
             cursor.close();
@@ -38,7 +38,7 @@ public class AppWidgetDataProvider implements RemoteViewsService.RemoteViewsFact
         /**This is done because the widget runs as a separate thread
          when compared to the current app and hence the app's data won't be accessible to it
          because I'm using a content provided **/
-        cursor = context.getContentResolver().query(MovieProvider.CONTENT_URI,null,null,null,null);
+        cursor = context.getContentResolver().query(MovieProvider.CONTENT_URI, null, null, null, null);
         Binder.restoreCallingIdentity(identityToken);
     }
 
@@ -77,12 +77,12 @@ public class AppWidgetDataProvider implements RemoteViewsService.RemoteViewsFact
         try {
             Bitmap theBitmap = Glide.
                     with(context.getApplicationContext()).
-                    load("http://image.tmdb.org/t/p/w185/"+cursor.getString(1))
+                    load("http://image.tmdb.org/t/p/w185/" + cursor.getString(1))
                     .asBitmap()
-                    .into(185,275) // Width and height
+                    .into(185, 275) // Width and height
                     .get();
 
-            remoteViews.setImageViewBitmap(R.id.grid_image,theBitmap);
+            remoteViews.setImageViewBitmap(R.id.grid_image, theBitmap);
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
@@ -90,9 +90,9 @@ public class AppWidgetDataProvider implements RemoteViewsService.RemoteViewsFact
         }
         //remoteViews.setTextViewText(R.id.movie_id,cursor.getString(0));
         movieid = cursor.getLong(0);
-        fillInIntent.putExtra("MOVIE_ID",movieid);
-        System.out.println("AppWidgetDataProvier getViewAt() : URL - "+cursor.getString(1)+" ID - "+movieid);
-        remoteViews.setOnClickFillInIntent(R.id.grid_image,fillInIntent);
+        fillInIntent.putExtra("MOVIE_ID", movieid);
+        System.out.println("AppWidgetDataProvier getViewAt() : URL - " + cursor.getString(1) + " ID - " + movieid);
+        remoteViews.setOnClickFillInIntent(R.id.grid_image, fillInIntent);
         return remoteViews;
     }
 

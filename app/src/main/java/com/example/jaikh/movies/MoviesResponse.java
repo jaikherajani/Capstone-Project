@@ -3,7 +3,9 @@ package com.example.jaikh.movies;
 /**
  * Created by jaikh on 09-12-2016.
  */
+
 import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 
 public class MoviesResponse {
@@ -30,15 +32,16 @@ public class MoviesResponse {
         return results;
     }
 
-    public Movie getResult()
-    {
+    public void setResults(List<Movie> results) {
+        this.results = results;
+    }
+
+    public Movie getResult() {
         return result;
     }
 
-    public void setResult(Movie result){ this.result=result; }
-
-    public void setResults(List<Movie> results) {
-        this.results = results;
+    public void setResult(Movie result) {
+        this.result = result;
     }
 
     public int getTotalResults() {

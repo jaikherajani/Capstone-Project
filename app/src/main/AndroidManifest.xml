@@ -46,7 +46,7 @@
             android:name=".AppWidgetService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
 
-        <activity android:name=".Feedback"/>
+        <activity android:name=".Feedback" />
     </application>
 
 </manifest>

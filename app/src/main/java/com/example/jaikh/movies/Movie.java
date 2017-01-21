@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Created by jaikh on 09-12-2016.
  */
-public class Movie implements  Serializable{
+public class Movie implements Serializable {
     @SerializedName("poster_path")
     private String posterPath;
     @SerializedName("adult")
@@ -39,7 +39,7 @@ public class Movie implements  Serializable{
     @SerializedName("vote_average")
     private Double voteAverage;
 
-    public Movie(String posterPath, boolean adult, String overview, String releaseDate, List<Integer> genreIds,Long id,
+    public Movie(String posterPath, boolean adult, String overview, String releaseDate, List<Integer> genreIds, Long id,
                  String originalTitle, String originalLanguage, String title, String backdropPath, Double popularity,
                  Integer voteCount, Boolean video, Double voteAverage) {
         this.posterPath = posterPath;
@@ -58,8 +58,7 @@ public class Movie implements  Serializable{
         this.voteAverage = voteAverage;
     }
 
-    public Movie (String posterPath,Long id)
-    {
+    public Movie(String posterPath, Long id) {
         this.posterPath = posterPath;
         this.id = id;
     }

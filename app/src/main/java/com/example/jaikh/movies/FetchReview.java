@@ -15,10 +15,11 @@ import java.net.URL;
  */
 
 public class FetchReview extends AsyncTask<Long, Void, String> {
-    public String apiKey= BuildConfig.API_KEY;
     private final String LOG_TAG = FetchReview.class.getSimpleName();
-    URL url;
+    public String apiKey = BuildConfig.API_KEY;
     public String movie_id;
+    URL url;
+
     @Override
     protected String doInBackground(Long... params) {
         // These two need to be declared outside the try/catch
@@ -34,7 +35,7 @@ public class FetchReview extends AsyncTask<Long, Void, String> {
             // Construct the URL for the theMoviedb query
             // Possible parameters are avaiable at TMDB's API page, at
             // http://api.themoviedb.org/3/discover/movie?api_key=[API KEY]
-                url = new URL("http://api.themoviedb.org/3/movie/"+movie_id+"/reviews?&api_key=" + apiKey);
+            url = new URL("http://api.themoviedb.org/3/movie/" + movie_id + "/reviews?&api_key=" + apiKey);
             // Create the request to OpenWeatherMap, and open the connection
             urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestMethod("GET");

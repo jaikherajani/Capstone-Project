@@ -4,7 +4,6 @@ package com.example.jaikh.movies;
  * Created by jaikh on 09-12-2016.
  */
 
-import com.example.jaikh.movies.MoviesResponse;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
@@ -19,7 +18,7 @@ public interface ApiInterface {
     Call<MoviesResponse> getPopularMovies(@Query("api_key") String apiKey);
 
     @GET("movie/{id}")
-    Call<SingleMovie> getMovieDetails(@Path("id") Long id, @Query("api_key") String apiKey,@Query("append_to_response") String params);
+    Call<SingleMovie> getMovieDetails(@Path("id") Long id, @Query("api_key") String apiKey, @Query("append_to_response") String params);
 
     @GET("movie/{id}")
     Call<Movie> getMovieDetails(@Path("id") Long id, @Query("api_key") String apiKey);

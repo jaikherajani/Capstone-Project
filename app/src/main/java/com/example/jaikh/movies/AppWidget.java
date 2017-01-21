@@ -6,7 +6,6 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.widget.RemoteViews;
 
@@ -17,7 +16,14 @@ public class AppWidget extends AppWidgetProvider {
 
     /*public static String CLICK_ACTION = "com.example.jaikh.movies.CLICK";*/
 
-    void updateAppWidget(Context context,AppWidgetManager appWidgetManager, int appWidgetId) {
+    private static void setRemoteAdapter(Context context, @NonNull final RemoteViews views) {
+        views.setRemoteAdapter(R.id.widget_gridView,
+                new Intent(context, AppWidgetService.class));
+
+        views.setEmptyView(R.id.widget_gridView, R.id.duh_no);
+    }
+
+    void updateAppWidget(Context context, AppWidgetManager appWidgetManager, int appWidgetId) {
         System.out.println("updateAppWidget() called");
         CharSequence widgetText = context.getString(R.string.appwidget_text);
         /*Construct the RemoteViews object*/
@@ -33,7 +39,7 @@ public class AppWidget extends AppWidgetProvider {
         PendingIntent onClickPendingIntent = PendingIntent.getActivity(context, 0,
                 onClickIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         views.setPendingIntentTemplate(R.id.widget_gridView, onClickPendingIntent);
-        appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId,R.id.widget_gridView);
+        appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.widget_gridView);
         appWidgetManager.updateAppWidget(appWidgetId, views);
     }
 
@@ -42,7 +48,7 @@ public class AppWidget extends AppWidgetProvider {
         // There may be multiple widgets active, so update all of them
         for (int appWidgetId : appWidgetIds) {
             System.out.println("onUpdate() called");
-            updateAppWidget(context,appWidgetManager, appWidgetId);
+            updateAppWidget(context, appWidgetManager, appWidgetId);
         }
         /*Intent intent = new Intent(WIDGET_BUTTON);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -66,7 +72,7 @@ public class AppWidget extends AppWidgetProvider {
         // Uses getClass().getName() rather than MyWidget.class.getName() for
         // portability into any App Widget Provider Class
         ComponentName thisAppWidgetComponentName =
-                new ComponentName(context.getPackageName(),getClass().getName()
+                new ComponentName(context.getPackageName(), getClass().getName()
                 );
         int[] appWidgetIds = appWidgetManager.getAppWidgetIds(
                 thisAppWidgetComponentName);
@@ -76,7 +82,7 @@ public class AppWidget extends AppWidgetProvider {
     @Override
     public void onReceive(Context context, Intent intent) {
         System.out.println("onReceive() called");
-        System.out.println("Intent recieved - "+intent.getLongExtra("MOVIE_ID",0));
+        System.out.println("Intent recieved - " + intent.getLongExtra("MOVIE_ID", 0));
         /*if (intent.getAction().equals(CLICK_ACTION)) {
             //do some really cool stuff here
             System.out.println("Widget Clicked");
@@ -93,13 +99,6 @@ public class AppWidget extends AppWidgetProvider {
     @Override
     public void onDisabled(Context context) {
         // Enter relevant functionality for when the last widget is disabled
-    }
-
-    private static void setRemoteAdapter(Context context, @NonNull final RemoteViews views) {
-        views.setRemoteAdapter(R.id.widget_gridView,
-                new Intent(context, AppWidgetService.class));
-
-        views.setEmptyView(R.id.widget_gridView,R.id.duh_no);
     }
 }
 

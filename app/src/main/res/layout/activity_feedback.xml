@@ -11,30 +11,30 @@
     tools:context="com.example.jaikh.movies.Feedback">
 
     <EditText
+        android:id="@+id/feedback_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/cd_feedback"
         android:contentDescription="@string/cd_feedback"
-        android:id="@+id/feedback_text"/>
+        android:hint="@string/cd_feedback" />
 
     <EditText
+        android:id="@+id/feedback_email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/feedback_email"
-        android:inputType="textEmailAddress"
-        android:hint="@string/cd_email"
+        android:layout_below="@id/feedback_text"
         android:contentDescription="@string/cd_email"
-        android:layout_below="@id/feedback_text"/>
+        android:hint="@string/cd_email"
+        android:inputType="textEmailAddress" />
 
     <Button
+        android:id="@+id/feedback_submit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/feedback_email"
         android:layout_alignEnd="@id/feedback_email"
-        android:text="@string/submit"
+        android:layout_below="@id/feedback_email"
         android:contentDescription="@string/cd_submit"
-        android:textStyle="bold"
-        android:id="@+id/feedback_submit"
-        android:textColor="@color/colorAccent"/>
+        android:text="@string/submit"
+        android:textColor="@color/colorAccent"
+        android:textStyle="bold" />
 
 </RelativeLayout>
