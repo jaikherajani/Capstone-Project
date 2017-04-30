@@ -14,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -24,15 +24,15 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MovieDetail"
+            android:name=".ui.MovieDetail"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <provider
-            android:name=".MovieProvider"
+            android:name=".database.MovieProvider"
             android:authorities="com.example.jaikh.moviesprovider"
             android:exported="true" />
 
-        <receiver android:name=".AppWidget">
+        <receiver android:name=".ui.widget.AppWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -43,10 +43,9 @@
         </receiver>
 
         <service
-            android:name=".AppWidgetService"
+            android:name=".ui.widget.AppWidgetService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
 
-        <activity android:name=".Feedback" />
     </application>
 
 </manifest>
