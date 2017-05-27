@@ -7,6 +7,8 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -19,6 +21,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import com.example.jaikh.movies.network.ApiClient;
 import com.example.jaikh.movies.network.ApiInterface;
@@ -71,14 +74,61 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         if (isNetworkAvailable())
             displayPopular(null);
         else {
-            snackbar = Snackbar.make(findViewById(R.id.fragment), R.string.sb_no_internet, Snackbar.LENGTH_INDEFINITE);
-            snackbar.setAction("dismiss", new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    snackbar.dismiss();
-                }
-            }).show();
+            showOfflineSnackbar();
         }
+
+        BottomNavigationView bottomNavigationView = (BottomNavigationView)
+                findViewById(R.id.navigation);
+
+        bottomNavigationView.setOnNavigationItemSelectedListener
+                (new BottomNavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                        /*Fragment selectedFragment = null;*/
+                        int id = item.getItemId();
+                        switch (id) {
+                            case R.id.action_popular:
+                                status = "popular";
+                                displayPopular(null);
+                                break;
+                            case R.id.action_most_rated:
+                                status = "most_rated";
+                                displayRated(null);
+                                break;
+                            case R.id.action_favorite:
+                                status = "favorites";
+                                displayFavorites(null);
+                                break;
+                        }
+                        /*FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                        transaction.replace(R.id.frame_layout, selectedFragment);
+                        transaction.commit();*/
+                        return true;
+                    }
+                });
+
+        //Manually displaying the first fragment - one time only
+        /*FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.frame_layout, ItemOneFragment.newInstance());
+        transaction.commit();*/
+
+        //Used to select an item programmatically
+        //bottomNavigationView.getMenu().getItem(2).setChecked(true);
+    }
+
+    private void showOfflineSnackbar() {
+        snackbar = Snackbar.make(findViewById(R.id.fragment), R.string.sb_no_internet, Snackbar.LENGTH_INDEFINITE);
+        snackbar.setAction("dismiss", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                snackbar.dismiss();
+            }
+        });
+        View snackbarLayout = snackbar.getView();
+        TextView textView = (TextView)snackbarLayout.findViewById(android.support.design.R.id.snackbar_text);
+        textView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_sync_problem_white_48dp, 0, 0, 0);
+        textView.setCompoundDrawablePadding(getResources().getDimensionPixelOffset(R.dimen.snackbar_icon_padding));
+        snackbar.show();
     }
 
     @Override
@@ -126,13 +176,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private void displayPopular(final Parcelable position) {
         status = "popular";
         if (!isNetworkAvailable()) {
-            snackbar = Snackbar.make(findViewById(R.id.fragment), R.string.sb_no_internet, Snackbar.LENGTH_INDEFINITE);
-            snackbar.setAction("dismiss", new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    snackbar.dismiss();
-                }
-            }).show();
+            showOfflineSnackbar();
         }
 
         movies.clear();
@@ -165,13 +209,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     private void displayRated(final Parcelable position) {
         if (!isNetworkAvailable()) {
-            snackbar = Snackbar.make(findViewById(R.id.fragment), R.string.sb_no_internet, Snackbar.LENGTH_INDEFINITE);
-            snackbar.setAction("dismiss", new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    snackbar.dismiss();
-                }
-            }).show();
+            showOfflineSnackbar();
         }
         status = "most_rated";
         movies.clear();
@@ -204,13 +242,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     private void displayFavorites(final Parcelable position) {
         if (!isNetworkAvailable()) {
-            snackbar = Snackbar.make(findViewById(R.id.fragment), R.string.sb_no_internet, Snackbar.LENGTH_INDEFINITE);
-            snackbar.setAction("dismiss", new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    snackbar.dismiss();
-                }
-            }).show();
+            showOfflineSnackbar();
         }
         status = "favorites";
         movies.clear();
@@ -288,5 +320,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
+        favCursor = null;
     }
 }

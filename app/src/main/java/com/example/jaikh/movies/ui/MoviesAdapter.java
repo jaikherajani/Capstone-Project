@@ -61,11 +61,11 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
                     Bundle mBundle = new Bundle();
                     mBundle.putLong("MOVIE_ID", movie_id);
                     mBundle.putSerializable("MOVIE", movie);
-                    MovieDetailFragment detailFragment = new MovieDetailFragment();
+                    DetailFragment detailFragment = new DetailFragment();
                     detailFragment.setArguments(mBundle);
                     supportFragmentManager.beginTransaction().replace(R.id.containerDetails, detailFragment).commit();
                 } else {
-                    Intent intent = new Intent(context, MovieDetail.class);
+                    Intent intent = new Intent(context, DetailActivity.class);
                     intent.putExtra("MOVIE_ID", movie_id);
                     intent.putExtra("MOVIE", movie);
                     context.startActivity(intent);

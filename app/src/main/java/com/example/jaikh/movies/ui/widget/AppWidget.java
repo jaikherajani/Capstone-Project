@@ -10,7 +10,7 @@ import android.support.annotation.NonNull;
 import android.widget.RemoteViews;
 
 import com.example.jaikh.movies.R;
-import com.example.jaikh.movies.ui.MovieDetail;
+import com.example.jaikh.movies.ui.DetailActivity;
 
 /**
  * Implementation of App Widget functionality.
@@ -33,7 +33,7 @@ public class AppWidget extends AppWidgetProvider {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.app_widget);
         setRemoteAdapter(context, views);
         /** PendingIntent to launch the MainActivity when the widget was clicked **/
-        Intent onClickIntent = new Intent(context, MovieDetail.class);
+        Intent onClickIntent = new Intent(context, DetailActivity.class);
         /*Bundle bundle = new Bundle();
         onClickIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         /*onClickIntent.setAction(AppWidget.CLICK_ACTION);
