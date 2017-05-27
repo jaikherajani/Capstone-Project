@@ -219,11 +219,12 @@ public class DetailFragment extends Fragment {
         System.out.println("https://image.tmdb.org/t/p/w185/" + sMovie.getPosterPath());
         Title.setText(sMovie.getTitle());
         releaseDate.setText(sMovie.getReleaseDate());
-        voteAvg.setText(sMovie.getVoteAverage().toString());
+        voteAvg.setText(Double.toString(sMovie.getVoteAverage()));
         plotView.setText(sMovie.getOverview());
         voteCount.setText(sMovie.getVoteCount() + " votes");
         //reviews.setText(sMovie.getReviews().getResults().toString());
-        if (sMovie.getVideo()) {
+
+            System.out.println("isVideoAvailable ? "+sMovie.getVideo());
             key = sMovie.getVideos().getResults().get(0).getKey();
             Glide.with(mContext)
                     .load("https://img.youtube.com/vi/" + key + "/hqdefault.jpg")
@@ -237,11 +238,11 @@ public class DetailFragment extends Fragment {
                     startActivity(intent1);
                 }
             });
-        } else {
+       /* } else {
             key = null;
             viewtrailer.setVisibility(View.GONE);
             trailerview.setVisibility(View.GONE);
-        }
+        }*/
 
 
         FetchReview task1 = new FetchReview();
