@@ -60,6 +60,7 @@ IMPORTANT: Make sure not to forget to move all the hardcoded Strings in your pro
 When you're ready to submit your project, click on Udacity in the navigation bar at the top your screen to return to your Udacity Home. Then, locate and expand the project you'd like to submit. Click on the button to submit your project. You can view the submission process in more detail here.
 If you have any problems submitting your project, please email us at android-project@udacity.com. Due to the high volume of submissions, the turnaround for your project can take up to a week.
 Each Android ND project will be reviewed against the Common Project Requirements, in addition to its project-specific rubric.
+
 ![Rubric Stage 1](/P6.pdf?raw=true "Capstone Project Rubric Stage 1")
 
 # Stage 2
